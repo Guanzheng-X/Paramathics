@@ -1,1 +1,1 @@
-This is Chaoran's folder to store PETSc codes.
+This is Chaoran's folder, and is used to store fault tolerance codes based on PETSc library.
