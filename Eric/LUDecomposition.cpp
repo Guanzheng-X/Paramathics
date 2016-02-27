@@ -65,3 +65,13 @@ int main(int argc, char *argv[])
    x = solver.solve(b);
    cout << x << endl;     //the solution to the linear algebra function
 }
+
+
+/*
+test matrix is:
+A = [1 -1; 3 -8]
+b = [3; 4]
+
+the solution to the pair linear algebra functions is:
+x = [4; 1]
+*/
