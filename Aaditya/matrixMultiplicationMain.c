@@ -1,3 +1,8 @@
+// This is the main function of Matrix Multiplication function which will fault injection methods
+// such as FLIPIT_Init(rank, argc, argv, seed); and FLIPIT_Finalize(NULL); 
+// Fault is injected in multiplication function which is define matrixMultiplcationFunction
+// In this example I have used Flipt LLVM based fault injection
+
 #include <stdio.h>
 #include "FlipIt/corrupt/corrupt.h"
 
