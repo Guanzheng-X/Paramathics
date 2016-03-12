@@ -1,3 +1,9 @@
+// In this example I have used Flipt LLVM based fault injection
+
+//# build the executable
+//gcc -I$FLIPIT_PATH/include -o main.o -c main.c
+//gcc -o test final.o main.o -L$FLIPIT_PATH/lib/ -lcorrupt
+//./test
 
 #include <stdio.h>
 #include "FlipIt/corrupt/corrupt.h"
