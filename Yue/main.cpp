@@ -1,100 +1,113 @@
-//
-//  main.cpp
-//  CG2
-//
-//  Created by 吴越 on 16/2/19.
-//  Copyright © 2016年 Yue Wu. All rights reserved.
-//
-#include <iostream>
-
-#include <Core>
-#include <Sparse>
+#include "math.hpp"
 #include <fstream>
+#include "sparse_matrix.hpp"
+#include <iostream>
+#include <cstdio>
+
 #include <vector>
-#include <ctime>
-using namespace Eigen;
 using namespace std;
-
-
-int main(int argc, const char * argv[]) {
-    
+void conjugate_gradient_test() {
     int rows; int cols ; int nonezero; //get the size of input matrix
-    //int n = 3;
-   
-    typedef Eigen::Triplet<double> T;//use to store row, col, v_ij
-    
-    vector<T> tripletList;	//use to store all the row
-    
-    /***************beging to construct the matrix****************/
     fstream read;
     
-    read.open("/Users/wuyue/Desktop/test/Andrews1.mtx", ios::in);
+    read.open("/Users/wuyue/Desktop/dataset/bcsstm22.mtx", ios::in);
     
     int row=0 ; int col=0; float value=0; //get the value
     read>>rows; read >> cols; read>>nonezero;
     
-    cout<<"matrix has "<<rows<<" rows "<< cols<<" cols "<<nonezero<<" nonezero values"<<endl;
-    
-    SparseMatrix<double,RowMajor> mat(rows,cols);//declare a row major matrix
-    tripletList.reserve(nonezero); //reserve the space to store nonezero value
-    
+    std::cout<<"matrix has "<<rows<<" rows "<< cols<<" cols "<<nonezero<<" nonezero values"<<endl;
+    SparseMatrix mat(rows, cols);
     while (!read.eof()){
         read>>row;
         read>>col;
         read>>value;
-        tripletList.push_back(T(row-1,col-1,value));
-        
-        
-    }
-    
-    mat.setFromTriplets(tripletList.begin(), tripletList.end()); //crate the matrix
-    mat.makeCompressed();
-   // cout<<mat<<endl;
-    
-    VectorXd x(rows);
-    VectorXd b(rows);
-    srand((unsigned)time(0));
-    for (int i=0; i<rows; i++) {
-        b(i)=1;
+        mat.set_element(row-1, col-1, value);
+        //cout<<mat.get_element(row-1, col-1);
        
-    }
-    ConjugateGradient<SparseMatrix<double,RowMajor>, Upper >cg;
-    //LeastSquaresConjugateGradient<SparseMatrix<double> >cg;
-  
-     //ConjugateGradient<SparseMatrix<double,RowMajor>,Eigen::Lower|Eigen::Upper,Eigen::IdentityPreconditioner>cg;
-
-    //BiCGSTAB<SparseMatrix<double,RowMajor> >cg;
-    cg.compute(mat);
-    //cg.analyzePattern(mat);
-    //cg.factorize(mat);
-    if(cg.info()!=Success){
-        std::cout<<"decomposition failed"<<endl;
-        return -1;
-    }
-   
-    cg.setMaxIterations(1000);
-    cg.setTolerance(0.0000001);
-    //std::cout<<"#maxiteration: "<<cg.maxIterations()<<endl;
-   
-   // while(i<cg.maxIterations()) {
         
-
-    asm("#it begins here!");
-    long startTime = time(NULL);
-    x=cg.solve(b);
-    long endTime = time(NULL);
-    std::cout << "#iterations: " << cg.iterations() << std::endl;
-    std::cout << "estimated error: " << cg.error()      << std::endl;
-    cout<<"solving time: "<<endTime-startTime<<" seconds"<<endl;
-    asm("#it ends here!");
-    if(cg.info()!=Success){
-        std::cout<<"solving failed"<<endl;
-        std::cout<<cg.info()<<endl;
-        return -2;
     }
-  
-    //}
-  //  VectorXd res = cg.solve(b);
-   
-        std::cout<<x<<endl;
+    
+    std::vector<double> vec;
+    for(int i=0;i<rows;i++){
+        vec.push_back(1);
+    }
+    
+    std::vector<double> x(rows);
+//    for(int i=0;i<rows;i++){
+//        x.push_back(1);
+//    }
+    Math::conjugate_gradient(mat, &vec[0], 2000, &x[0]);
+    for (std::vector<double>::iterator it = x.begin() ; it != x.end(); ++it)
+        std::cout << ' ' << *it;
+    std::cout<<endl;
+     //Test Case 1
+//    SparseMatrix a(4, 2);
+//    a.set_element(0, 0, 1.0);
+//    a.set_element(0, 1, 2.0);
+//    
+//    a.set_element(1, 0, 2.0);
+//    a.set_element(1, 1, -3.0);
+//    
+//    a.set_element(2, 0, 4.0);
+//    a.set_element(2, 1, -1.0);
+//    
+//    a.set_element(3, 0, -5.0);
+//    a.set_element(3, 1, 2.0);
+//    
+//    // Suppose solution is (2, 3).
+//    std::vector<double> b(4);
+//    b[0] = 3.0;  // 8.0
+//    b[1] = 2.0;  // -5.0
+//    b[2] = -4.0;
+//    b[3] = 5.0;
+//    
+//    std::vector<double> x(2);
+//    x[0] = x[1] = 0.0;
+//    
+//    Math::conjugate_gradient(a, &b[0], 2, &x[0]);
+//        for (std::vector<double>::iterator it = x.begin() ; it != x.end(); ++it)
+//            std::cout << ' ' << *it;
+//        std::cout<<endl;
+//    std::vector<double> c(4);
+//    a.multiply_column(&x[0], &c[0]);
+//    
+//    printf("x: %lf %lf\n", x[0], x[1]);
+//    
+//    for (int i = 0; i < 4; i++) {
+//        printf(" %lf(%lf)", c[i], b[i]);
+//    }
+//    printf("\n");
+//    
+//    // Test Case 2
+//    a = SparseMatrix(1, 2);
+//    a.set_element(0, 0, 1.0);
+//    a.set_element(0, 1, 2.0);
+//    
+//    b.resize(1);
+//    b[0] = 3.0;
+//    
+//    // x[0] = x[1] = 0.0;
+//    x[0] = 7.0;
+//    x[1] = -3.0;
+//    
+//    Math::conjugate_gradient(a, &b[0], 2, &x[0]);
+//    
+//    c.resize(1);
+//    a.multiply_column(&x[0], &c[0]);
+//    
+//    printf("x: %lf %lf\n", x[0], x[1]);
+//    
+//    for (int i = 0; i < 1; i++) {
+//        printf(" %lf(%lf)", c[i], b[i]);
+//    }
+//    printf("\n");
+//    
+//    printf("} conjugate_gradient_test\n");
 }
+
+int main() {
+    conjugate_gradient_test();
+    
+    return 0;
+}
+

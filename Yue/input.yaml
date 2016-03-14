@@ -1,0 +1,40 @@
+compileOption:
+    instSelMethod:
+      - insttype:
+          include: 
+            #- all
+            - add 
+            - fadd
+            - mul            
+          #exclude:
+           # - ret
+      - funcname:
+          include:
+            - Math::conjugate_gradient
+            #- main
+
+    #regSelMethod: customregselector
+
+    #customRegSelector: DataCorruption(Data)
+
+    regSelMethod: regloc
+    regloc: dstreg
+
+    includeInjectionTrace: 
+        - forward
+        - backward
+
+
+
+runOption:
+    - run:
+        numOfRuns: 5
+        fi_type: bitflip
+
+    - run:
+        numOfRuns: 5
+        fi_type: stuck_at_0
+
+    - run:
+        numOfRuns: 3
+        fi_type: DataCorruption(Data) 
