@@ -4,13 +4,15 @@
 
 #include "loadCase.h"
 #include "makeYbus.h"
+#include "makeSbus.h"
 
 
 int main()
 {
 	mpc mycase = loadcase();
 	MatrixXcd Ybus(makeYbus(mycase));
-	//cout << Ybus << endl;
+	VectorXcd Sbus(makeSbus(mycase));
+	//cout << Sbus << endl;
 
 	return 0;
 }

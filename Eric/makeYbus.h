@@ -1,5 +1,7 @@
 /*
 	Created by Eric Xu
+
+	This file creats admittance matrix from case files.
 */
 
 #ifndef MAKEYBUS_H

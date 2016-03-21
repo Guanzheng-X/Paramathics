@@ -1,5 +1,7 @@
 /*
 	Created by Eric Xu
+
+	This file put the data in case files into a class, mpc.
 */
 
 #ifndef LOADCASE_H
