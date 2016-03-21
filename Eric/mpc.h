@@ -15,9 +15,6 @@ using namespace Eigen;
 using std::cout;
 using std::endl;
 
-typedef Matrix<std::complex<double>, Dynamic, Dynamic> MatrixComXd;
-typedef Matrix<std::complex<double>, Dynamic, 1> VectorComXd;
-
 class mpc
 {
 
@@ -26,9 +23,9 @@ public:
 	int baseMVA;
 	int nb;
 	int nl;
-	MatrixComXd Bus;
-	MatrixComXd Gen;
-	MatrixComXd Branch;
+	MatrixXd Bus;
+	MatrixXd Gen;
+	MatrixXd Branch;
 
 //----------- member function ----------
 	mpc()
