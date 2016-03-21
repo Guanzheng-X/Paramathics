@@ -9,7 +9,7 @@
 #include "mpc.h"
 
 
-MatrixXcd getYbus(mpc MPC)
+MatrixXcd makeYbus(mpc MPC)
 {
 	VectorXd stat_part(MPC.nl);
 	VectorXcd stat(MPC.nl);
