@@ -9,7 +9,8 @@
 int main()
 {
 	mpc mycase = loadcase();
-	getYff(mycase);
+	MatrixXcd Ybus(getYbus(mycase));
+	cout << Ybus << endl;
 
 	return 0;
 }
