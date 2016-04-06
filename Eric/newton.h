@@ -94,10 +94,6 @@ VectorXcd newton(mpc &MPC)
 	int npv = pv.rows();
 	int npq = pq.rows();
 
-	int j1 = 1;			int j2 = npv;
-	int j3 = j2 + 1;	int j4 = j2 + npq;
-	int j5 = j4 + 1;	int j6 = j4 + npq;
-
 	// evaluate F(x0)
 	VectorXcd mis(MPC.nb);
 	mis = (V.array().cwiseProduct((Ybus * V).array().conjugate())).matrix() - Sbus; //mis = V .* conj(Ybus * V) - Sbus
