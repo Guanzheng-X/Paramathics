@@ -1,8 +1,5 @@
 /* File:     mpi_conjugate_gradient.c
- * Purpose:  Implement the iterative method known as 
- *           "method of conjugate gradients" with C and MPI. 
- *           The method of cojugate gradients is used to solve linear systems 
- *           when the coefficient matrix is symmetric and positive definite.
+ * Propose: Implement Conjugate Gradient Method and calculate the Relative A Norm.
  *
  * Compile:  mpicc -g -Wall -o mpi_conjugate_gradient mpi_conjugate_gradient.c -lm
  *
