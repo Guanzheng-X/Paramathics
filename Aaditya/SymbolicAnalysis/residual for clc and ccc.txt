@@ -7,5 +7,17 @@ Ri - (Qf*Ri^2)/(PiT*QfT) - (A*RlT*(Ri + (Pi*(Ri - (Qf*Ri^2)/(PiT*QfT))^2)/Ri^2 -
 residual for ccc
  
 Ri - (Qf*Ri^2)/(PiT*QfT) - (A*((Qf*Ri^2)/(PiT*QfT) - Ri + (A*(Ri - (Qf*Ri^2)/(PiT*QfT))^2*(Ri + (Pi*(Ri - (Qf*Ri^2)/(PiT*QfT))^2)/Ri^2 - (Qf*Ri^2)/(PiT*QfT)))/(PfT*QcT))^2*(Ri + (((Qf*Ri^2)/(PiT*QfT) - Ri + (A*(Ri - (Qf*Ri^2)/(PiT*QfT))^2*(Ri + (Pi*(Ri - (Qf*Ri^2)/(PiT*QfT))^2)/Ri^2 - (Qf*Ri^2)/(PiT*QfT)))/(PfT*QcT))^2*(Ri + (Pi*(Ri - (Qf*Ri^2)/(PiT*QfT))^2)/Ri^2 - (Qf*Ri^2)/(PiT*QfT)))/(Ri - (Qf*Ri^2)/(PiT*QfT))^2 - (Qf*Ri^2)/(PiT*QfT) - (A*(Ri - (Qf*Ri^2)/(PiT*QfT))^2*(Ri + (Pi*(Ri - (Qf*Ri^2)/(PiT*QfT))^2)/Ri^2 - (Qf*Ri^2)/(PiT*QfT)))/(PfT*QcT)))/(PcT*QccT) - (A*(Ri - (Qf*Ri^2)/(PiT*QfT))^2*(Ri + (Pi*(Ri - (Qf*Ri^2)/(PiT*QfT))^2)/Ri^2 - (Qf*Ri^2)/(PiT*QfT)))/(PfT*QcT)
+
+
+
+simplified clc
+
+Ri - (Qf*Ri^2)/(PiT*QfT) - (A*Ri^2*(PiT*QfT - Qf*Ri)^3*(Pi*PiT*QfT - Pi*Qf*Ri + PiT*QfT*Ri))/(PfT*PiT^4*QcT*QfT^4)
+
+
+simplified ccc
+
+Ri - (Qf*Ri^2)/(PiT*QfT) - (A*((Qf*Ri^2)/(PiT*QfT) - Ri + (A*Ri^2*(PiT*QfT - Qf*Ri)^3*(Pi*PiT*QfT - Pi*Qf*Ri + PiT*QfT*Ri))/(PfT*PiT^4*QcT*QfT^4))^2*(Ri + (((Qf*Ri^2)/(PiT*QfT) - Ri + (A*Ri^2*(PiT*QfT - Qf*Ri)^3*(Pi*PiT*QfT - Pi*Qf*Ri + PiT*QfT*Ri))/(PfT*PiT^4*QcT*QfT^4))^2*(Pi*PiT*QfT - Pi*Qf*Ri + PiT*QfT*Ri))/(Ri^2*(PiT*QfT - Qf*Ri)) - (Qf*Ri^2)/(PiT*QfT) - (A*Ri^2*(PiT*QfT - Qf*Ri)^3*(Pi*PiT*QfT - Pi*Qf*Ri + PiT*QfT*Ri))/(PfT*PiT^4*QcT*QfT^4)))/(PcT*QccT) - (A*Ri^2*(PiT*QfT - Qf*Ri)^3*(Pi*PiT*QfT - Pi*Qf*Ri + PiT*QfT*Ri))/(PfT*PiT^4*QcT*QfT^4)
+ 
  
  
