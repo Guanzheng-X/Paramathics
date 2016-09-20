@@ -10,12 +10,12 @@ Ri - (Qf*Ri^2)/(PiT*QfT) - (A*((Qf*Ri^2)/(PiT*QfT) - Ri + (A*(Ri - (Qf*Ri^2)/(Pi
 
 
 
-simplified clc
+simplified clc expression using matlab
 
 Ri - (Qf*Ri^2)/(PiT*QfT) - (A*Ri^2*(PiT*QfT - Qf*Ri)^3*(Pi*PiT*QfT - Pi*Qf*Ri + PiT*QfT*Ri))/(PfT*PiT^4*QcT*QfT^4)
 
 
-simplified ccc
+simplified ccc expression using matlab
 
 Ri - (Qf*Ri^2)/(PiT*QfT) - (A*((Qf*Ri^2)/(PiT*QfT) - Ri + (A*Ri^2*(PiT*QfT - Qf*Ri)^3*(Pi*PiT*QfT - Pi*Qf*Ri + PiT*QfT*Ri))/(PfT*PiT^4*QcT*QfT^4))^2*(Ri + (((Qf*Ri^2)/(PiT*QfT) - Ri + (A*Ri^2*(PiT*QfT - Qf*Ri)^3*(Pi*PiT*QfT - Pi*Qf*Ri + PiT*QfT*Ri))/(PfT*PiT^4*QcT*QfT^4))^2*(Pi*PiT*QfT - Pi*Qf*Ri + PiT*QfT*Ri))/(Ri^2*(PiT*QfT - Qf*Ri)) - (Qf*Ri^2)/(PiT*QfT) - (A*Ri^2*(PiT*QfT - Qf*Ri)^3*(Pi*PiT*QfT - Pi*Qf*Ri + PiT*QfT*Ri))/(PfT*PiT^4*QcT*QfT^4)))/(PcT*QccT) - (A*Ri^2*(PiT*QfT - Qf*Ri)^3*(Pi*PiT*QfT - Pi*Qf*Ri + PiT*QfT*Ri))/(PfT*PiT^4*QcT*QfT^4)
  
