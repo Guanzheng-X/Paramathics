@@ -42,3 +42,12 @@ residual for ccc
  
 Ri - d - (A*(d - Ri + (A*e*g)/(PfT*QcT))^2*(Ri + ((d - Ri + (A*e*g)/(PfT*QcT))^2*g)/e - d - (A*e*g)/(PfT*QcT)))/(PcT*QccT) - (A*e*g)/(PfT*QcT)
 
+---new ---
+
+residual for clc
+
+B - A*((Pi*Ri^2)/(PiT*QfT) + Xi) - (A*RlT*g^2)/(h*QlT) + (A*(A*((Pi*Ri^2)/(PiT*QfT) + Xi) - B + (A*RlT*g^2)/(h*QlT))^2*(A*((Pi*Ri^2)/(PiT*QfT) + Xi) - B + (A*RlT*g^2)/(h*QlT) + (A*RlT1*g^2)/(h*QlT)))/(PlT*h^2*A)
+ 
+residual for ccc
+ 
+Ri - d - (A*(e + i)^2*(Ri + ((e + i)^2*g)/e^2 - d - i))/(PcT*QccT) - i
