@@ -51,3 +51,24 @@ B - A*((Pi*Ri^2)/(PiT*QfT) + Xi) - (A*RlT*g^2)/(h*QlT) + (A*(A*((Pi*Ri^2)/(PiT*Q
 residual for ccc
  
 Ri - d - (A*(e + i)^2*(Ri + ((e + i)^2*g)/e^2 - d - i))/(PcT*QccT) - i
+
+
+
+-------------------------------------Last---------------------------------------------------
+
+residual for clc
+
+B - A*((d*Qf*Pi) + Xi) - (A*c*g^2)/(h^2*A) + (A*(A*((d*Qf*Pi) + Xi) - B + (A*c*g^2)/(h^2*A))^2*(A*((d*Qf*Pi) + Xi) - B + (A*c*g^2)/(h^2*A) + (A*c1*g^2)/(h^2*A)))/(((-z*h^2*A)/(h^2*A))*h^2*A)
+ 
+residual for ccc
+ 
+Ri - d - (A*(e + i)^2*(Ri + ((e + i)^2*g)/e^2 - d - i))/((e^2*A*h)/(h^2*A))^2 A - i
+
+ d = (Qf*Ri^2)/(PiT*QfT)
+e = (Ri-d)
+f = Pi*e^2
+g = (Ri+f)/(Ri^2-d)
+h = PfT
+i = A*e^2*g/ h^3*A
+rl = z
+
