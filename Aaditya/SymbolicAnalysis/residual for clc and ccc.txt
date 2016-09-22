@@ -72,3 +72,31 @@ h = PfT
 i = A*e^2*g/ h^3*A
 rl = z
 
+
+------------------------------- cl and cc equation --------------------------------------------
+
+>> clc_self_stabilizing  
+B - A*((Pi*Ri^2)/(PiT*QfT) + Xi) - (A*RlT*(Ri + (Pi*(Ri - (Qf*Ri^2)/(PiT*QfT))^2)/Ri^2 - (Qf*Ri^2)/(PiT*QfT))^2)/(PfT*QlT)
+ 
+
+>> ccc_self_stabilizing 
+Ri - (Qf*Ri^2)/(PiT*QfT) - (A*(Ri - (Qf*Ri^2)/(PiT*QfT))^2*(Ri + (Pi*(Ri - (Qf*Ri^2)/(PiT*QfT))^2)/Ri^2 - (Qf*Ri^2)/(PiT*QfT)))/(PfT*QcT)
+
+
+// simplify the equation
+j = (Ri + (Pi*(Ri - (Qf*Ri^2)/(PiT*QfT))^2)/Ri^2 - (Qf*Ri^2)/(PiT*QfT))
+
+>> clc_self_stabilizing  
+B - A*((Pi*Ri^2)/(PiT*QfT) + Xi) - (A*RlT*j^2)/(PfT*QlT)
+
+>> ccc_self_stabilizing 
+Ri - (Qf*Ri^2)/(PiT*QfT) - (A*(Ri - (Qf*Ri^2)/(PiT*QfT))^2*j)/(PfT*QcT)
+
+
+Consider B and Ri as constant, so we want the 2nd part of the cl equation to be more than 2nd part of the cc equation
+
+A*((Pi*Ri^2)/(PiT*QfT) + Xi) - (A*RlT*j^2)/(PfT*QlT) > (Qf*Ri^2)/(PiT*QfT) - (A*(Ri - (Qf*Ri^2)/(PiT*QfT))^2*j)/(PfT*QcT)
+
+
+
+
