@@ -97,6 +97,37 @@ Consider B and Ri as constant, so we want the 2nd part of the cl equation to be 
 
 A*((Pi*Ri^2)/(PiT*QfT) + Xi) - (A*RlT*j^2)/(PfT*QlT) > (Qf*Ri^2)/(PiT*QfT) - (A*(Ri - (Qf*Ri^2)/(PiT*QfT))^2*j)/(PfT*QcT)
 
+-------------------------------------------------- cl and cc residual Last ------------------------------------------
 
+>> cl_self_stabilizing  
+B - A*((Pi*Ri^2)/(PiT*QfT) + Xi) - (A*RlT*(Ri + (Pi*(Ri - (Qf*Ri^2)/(PiT*QfT))^2)/Ri^2 - (Qf*Ri^2)/(PiT*QfT))^2)/(PfT*QlT)
+ 
+
+>> cc_self_stabilizing 
+Ri - (Qf*Ri^2)/(PiT*QfT) - (A*(Ri - (Qf*Ri^2)/(PiT*QfT))^2*(Ri + (Pi*(Ri - (Qf*Ri^2)/(PiT*QfT))^2)/Ri^2 - (Qf*Ri^2)/(PiT*QfT)))/(PfT*QcT)
+
+
+// simplify the equation
+j = (Ri + (Pi*(Ri - (Qf*Ri^2)/(PiT*QfT))^2)/Ri^2 - (Qf*Ri^2)/(PiT*QfT))
+
+>> cl_self_stabilizing  
+B - A*((Pi*Ri^2)/(PiT*QfT) + Xi) - (A*RlT*j^2)/(PfT*QlT)
+
+>> cc_self_stabilizing 
+Ri - (Qf*Ri^2)/(PiT*QfT) - (A*(Ri - (Qf*Ri^2)/(PiT*QfT))^2*j)/(PfT*QcT)
+
+// replace RlT QlT PfT QcT
+
+PfT = (Ri-(((Ri^2)/(PiT*QfT))*Qf) + ((Ri - (Qf*Ri^2)/(PiT*QfT))^2/Ri^2)*Pi)
+QlT = (A*(Ri-(((Ri^2)/(PiT*QfT))*Qf) + ((Ri - (Qf*Ri^2)/(PiT*QfT))^2/Ri^2)*Pi))
+QcT = (A*(Ri-(((Ri^2)/(PiT*QfT))*Qf) + ((Ri - (Qf*Ri^2)/(PiT*QfT))^2/Ri^2)*Pi)^2)
+RlT = (b-(A*(Xi+((Ri^2)/(PiT*QfT))*Pi)))
+
+>> cl_self_stabilizing  
+B - A*((Pi*Ri^2)/(PiT*QfT) + Xi) - (A*(b-(A*(Xi+((Ri^2)/(PiT*QfT))*Pi)))*j^2)/((Ri-(((Ri^2)/(PiT*QfT))*Qf) + ((Ri - (Qf*Ri^2)/(PiT*QfT))^2/Ri^2)*Pi)*(A*(Ri-(((Ri^2)/(PiT*QfT))*Qf) + ((Ri - (Qf*Ri^2)/(PiT*QfT))^2/Ri^2)*Pi)))
+
+
+>> cc_self_stabilizing 
+Ri - (Qf*Ri^2)/(PiT*QfT) - (A*(Ri - (Qf*Ri^2)/(PiT*QfT))^2*j)/((Ri-(((Ri^2)/(PiT*QfT))*Qf) + ((Ri - (Qf*Ri^2)/(PiT*QfT))^2/Ri^2)*Pi)*(A*(Ri-(((Ri^2)/(PiT*QfT))*Qf) + ((Ri - (Qf*Ri^2)/(PiT*QfT))^2/Ri^2)*Pi)^2))
 
 
