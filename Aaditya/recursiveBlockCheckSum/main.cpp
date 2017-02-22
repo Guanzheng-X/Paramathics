@@ -383,7 +383,7 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 							j = j * 2;
 							break;
 							// check if more error exists
-							for (int j = ; j < ans.size(); j++) {
+							for (int j = id; j < ans.size(); j++) {
 								if (ans[j]) {
 									// store j and id
 									moreErrors = true;
