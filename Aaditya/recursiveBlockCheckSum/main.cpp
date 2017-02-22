@@ -239,7 +239,7 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 	bc5.idx.push_back(make_pair(487, 900));
 	checkVector.push_back(bc5);
 
-	
+
 	// ------------The preprocessing code snippet ends here
 
 	//this is the original cg code
@@ -304,7 +304,7 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 			corr = *(double*)&ans;
 			aaa[0] = corr;
 			cout << "Value after corruption " << corr << endl;
-	
+
 
 			corruptIt2 = aaa[7740];
 			cout << "Value in matrix A before corruption " << corruptIt2 << endl;
@@ -343,15 +343,15 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 		if (abs(cSum - cqSum) > 100) {
 			error = true;
 			cout << "error has been detected" << endl;
-			
-			vector<pair<int,int>> extraError;
+
+			vector<pair<int, int>> extraError;
 			while (error) {
 				int k = 0;
 				int j = 0;
 				vector<bool> ans;
 				while (k < 5) {
 					auto f = checkVector[k].vec;
-					
+
 					for (int i = 0; i < 2; i++) {
 
 						auto r1 = checkVector[k].idx[j + i].first;
@@ -369,6 +369,7 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 									q[r3] = inner_product(matrixA[r3], p);
 								}
 								error = false;
+								cout << endl << "Error has been fixed " << endl;
 							}
 						}
 						else {
@@ -377,31 +378,31 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 					}
 					k++;
 					int id = 0;
-					for (auto  &i : ans) {
+					for (auto &i : ans) {
 						if (i) {
 							j += id;
 							j = j * 2;
-							break;
+							
 							// check if more error exists
-							for (int j = id; j < ans.size(); j++) {
+							for (int j = id+1; j < ans.size(); j++) {
 								if (ans[j]) {
 									// store j and id
 									moreErrors = true;
-									extraError.push_back(make_pair(k,j));
+									auto tmpJ = j * 2;
+									extraError.push_back(make_pair(k, tmpJ));
 								}
 							}
+							break;
 						}
 						id++;
 					}
 					ans.clear();
 				}
 			}
-		}
 
-		// check if more errors exits
-		while (moreErrors) {
-			cout << "error has been detected" << endl;
-			vector<pair<int,int>> extraError;
+			// check if more errors exits
+			while (moreErrors) {
+				cout << "error has been detected" << endl;
 
 				int k = extraError[0].first;
 				int j = extraError[0].second;
@@ -409,7 +410,7 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 
 				while (k < 5) {
 					auto f = checkVector[k].vec;
-					
+
 					for (int i = 0; i < 2; i++) {
 
 						auto r1 = checkVector[k].idx[j + i].first;
@@ -426,6 +427,8 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 								for (; r3 < r2; r3++) {
 									q[r3] = inner_product(matrixA[r3], p);
 								}
+								cout << "Error 2 has been fixed " << endl;
+								moreErrors = false;
 							}
 						}
 						else {
@@ -435,7 +438,7 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 
 					k++;
 					int id = 0;
-					for (auto  &i : ans) {
+					for (auto &i : ans) {
 						if (i) {
 							j += id;
 							j = j * 2;
@@ -445,7 +448,12 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 					}
 					ans.clear();
 				}
+			}
+
+
 		}
+
+		
 		// recurisve block checksum approach ends here
 
 
@@ -459,7 +467,7 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 			xi[i] = (x[i] + (alpha * p[i]));
 		}
 
-		x = xi;		
+		x = xi;
 
 		vector<double> ri(rows);
 
@@ -485,7 +493,7 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 
 		// This is code snippet helps us to mimic the transient error since we flip the corrupted
 		// values back to orginal value
-		if (iteration == ite )
+		if (iteration == ite)
 		{
 			vector<double> aaaa = a();
 
@@ -498,7 +506,7 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 
 			const vector<double>aa = aaaa;
 			a.operator()(aa);
-		}	
+		}
 
 	}
 
@@ -553,7 +561,7 @@ int main(int argc, char* argv[])
 	vector<double> x(rows);
 
 	conjugate_gradient(A, b, 2000, x);
-	
+
 	/*
 	for (int i = 0; i < x.size(); i++)
 	{
