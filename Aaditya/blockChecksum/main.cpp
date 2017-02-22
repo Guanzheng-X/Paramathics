@@ -12,7 +12,7 @@ using namespace myg;
 
 struct blockCheck {
 	vector<vector<double>> vec;
-	vector<pair<int,int>> idx;
+	vector<pair<int, int>> idx;
 
 };
 
@@ -47,16 +47,13 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 {
 	// below code snippet will allow the preprocessing code to run and form a block checksum matrix
 	// the idea here is to iterate over matrix A and based on number of nnz elements form a checksum matrix
-	
+
 	auto rowPointer = a.IA();
 	auto colPointer = a.JA();
 	auto valPointer = a();
 
 	int ere = 0;
-	for (auto&i : valPointer) {
-		cout << ere <<"  " << i << endl;
-		ere++;
-	}
+	
 	/*
 	// let's start with the block size of 10
 	vector<vector<double>> blockCheckSum;
@@ -64,22 +61,22 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 	auto blockCount = (a().size())/10;
 	int cntValue = 10;
 	int rowIdx = 1;
-	
+
 	while (cntValue > 0) {
-		auto tmpCount = blockCount;
-		// add the row into blockCheckSum matrix and decrement the count of tmpCount
-		while (tmpCount > 0) {
-			if (tmpCount > rowPointer[rowIdx - 1] - rowPointer[rowIdx]) {
-				int l = rowPointer[rowIdx - 1] - rowPointer[rowIdx];
-				// get the rowSize of the matrix A
-				vector<double> ins(rowPointer.size()/10, 0);
-				for (; l > 0; l--) {
-					ins[colPointer[l]] = valPointer[l];
-				 }
-				
-			}
-		}
-		cntValue--;
+	auto tmpCount = blockCount;
+	// add the row into blockCheckSum matrix and decrement the count of tmpCount
+	while (tmpCount > 0) {
+	if (tmpCount > rowPointer[rowIdx - 1] - rowPointer[rowIdx]) {
+	int l = rowPointer[rowIdx - 1] - rowPointer[rowIdx];
+	// get the rowSize of the matrix A
+	vector<double> ins(rowPointer.size()/10, 0);
+	for (; l > 0; l--) {
+	ins[colPointer[l]] = valPointer[l];
+	}
+
+	}
+	}
+	cntValue--;
 	}
 
 	// check for the exit condition
@@ -94,30 +91,30 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 
 	int denseRowIt = 0;
 	for (int i = 0; i < matrixA.size(); i++) {
-		if (i == 0) {
-		}
-		else {
-			if (i % 10 == 0) {
-				denseRowIt++;
-			}
-		}
-		// now run through the matrixA to construct dense block checksum matrix
-		for (int j = 0; j < cols; j++) {
-			denseCheckMatrix[denseRowIt][j] += matrixA[i][j];
-		}
+	if (i == 0) {
 	}
-	
+	else {
+	if (i % 10 == 0) {
+	denseRowIt++;
+	}
+	}
+	// now run through the matrixA to construct dense block checksum matrix
+	for (int j = 0; j < cols; j++) {
+	denseCheckMatrix[denseRowIt][j] += matrixA[i][j];
+	}
+	}
+
 	// now write the csv file into txt file
 	ofstream denseMat("densechecksummatrix.txt");
 	denseMat << 90 << " " << 900 << " " << 2992 << endl;;
 	for (int i = 0; i < denseCheckMatrix.size(); i++) {
-		for (int j = 0; j < cols; j++) {
-			if (denseCheckMatrix[i][j] != 0)
-			denseMat << i + 1 << " " << j + 1 << " " << denseCheckMatrix[i][j] << endl;
-		}
+	for (int j = 0; j < cols; j++) {
+	if (denseCheckMatrix[i][j] != 0)
+	denseMat << i + 1 << " " << j + 1 << " " << denseCheckMatrix[i][j] << endl;
+	}
 	}
 
-	
+
 	// now read the txt file for dense checksum matrix into a sparse matrix
 
 	fstream readDenseMat;
@@ -130,11 +127,11 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 	int cSparse;
 	double vSparse;
 	while (!readDenseMat.eof()) {
-		readDenseMat >> rSparse;
-		readDenseMat >> cSparse;
-		readDenseMat >> vSparse;
+	readDenseMat >> rSparse;
+	readDenseMat >> cSparse;
+	readDenseMat >> vSparse;
 
-		sparseCheckSum(rSparse - 1, cSparse - 1, vSparse);
+	sparseCheckSum(rSparse - 1, cSparse - 1, vSparse);
 	}		// end of file
 
 	readDenseMat.close();
@@ -142,16 +139,16 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 	// block checksum code ends here
 	*/
 
-	
+
 	// This is recursive block checksum approach idea to implement checksum matrix
-	
+
 	// make one check sum matrix
-	vector<double> check1(cols,0);
-	for (int i = 0; i < matrixA.size();i++) {
+	vector<double> check1(cols, 0);
+	for (int i = 0; i < matrixA.size(); i++) {
 		for (int j = 0; j < cols; j++) {
 			//if (j == 0 && matrixA[i][j] != 0) {
-				//cout << i << " " << j << endl;
-				//cout << matrixA[i][j] << endl;
+			//cout << i << " " << j << endl;
+			//cout << matrixA[i][j] << endl;
 			//}
 			check1[j] += matrixA[i][j];
 		}
@@ -163,7 +160,7 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 	// iterate over the checksum matrix and insert the appropriate checksum vector in check2 2d vector
 	for (int i = 0; i < matrixA.size(); i++) {
 		for (int j = 0; j < cols; j++) {
-			
+
 			if (i > 255) {
 				if (flag) {
 					indexOfChecksum++;
@@ -178,11 +175,11 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 	indexOfChecksum = 0;
 	//flag = true;
 	vector<vector<double>> check4(4, vector<double>(cols, 0));
-	vector<int> check4Range{133,255,378};
+	vector<int> check4Range{ 133,255,378 };
 	int check4It = 0;
 	for (int i = 0; i < matrixA.size(); i++) {
 		for (int j = 0; j < cols; j++) {
-			if (i == check4Range[check4It]+1) {
+			if (i == check4Range[check4It] + 1) {
 				if (check4It != 2) {
 					check4It++;
 					indexOfChecksum++;
@@ -218,7 +215,7 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 	check4It = 0;
 	for (int i = 0; i < matrixA.size(); i++) {
 		for (int j = 0; j < cols; j++) {
-			if (i == check4Range[check4It]+1) {
+			if (i == check4Range[check4It] + 1) {
 				if (check4It != 14) {
 					check4It++;
 					indexOfChecksum++;
@@ -236,7 +233,7 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 	check4It = 0;
 	for (int i = 0; i < matrixA.size(); i++) {
 		for (int j = 0; j < cols; j++) {
-			if (i == check4Range[check4It]+1) {
+			if (i == check4Range[check4It] + 1) {
 				if (check4It != 30) {
 					check4It++;
 					indexOfChecksum++;
@@ -245,18 +242,18 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 			check32[indexOfChecksum][j] += matrixA[i][j];
 		}
 	}
-	
-	
+
+
 	vector<blockCheck> checkVector;
 	blockCheck bc1;
 	bc1.vec = check2;
-	bc1.idx.push_back(make_pair(0,255));
+	bc1.idx.push_back(make_pair(0, 255));
 	bc1.idx.push_back(make_pair(256, 900));
 	checkVector.push_back(bc1);
 
 	blockCheck bc2;
 	bc2.vec = check4;
-	bc2.idx.push_back(make_pair(0,135));
+	bc2.idx.push_back(make_pair(0, 135));
 	bc2.idx.push_back(make_pair(136, 255));
 	bc2.idx.push_back(make_pair(256, 378));
 	bc2.idx.push_back(make_pair(379, 900));
@@ -334,9 +331,9 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 
 
 
-			
+
 	// ------------The preprocessing code snippet ends here
-	
+
 	//this is the original cg code
 
 	// compute r=b-Ax0
@@ -351,7 +348,7 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 	// A multiply x0
 	ax = a * x;
 
-	
+
 	// residual r = b - Ax0
 	for (int i = 0; i < rows; i++)
 	{
@@ -372,15 +369,15 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 	double converge = 1;
 	int jk = -1;
 
-	for (iteration = 0; iteration < num_iterations + 500; iteration++) 
+	for (iteration = 0; iteration < num_iterations + 500; iteration++)
 	{
-		
+
 		converge = inner_product(r, r);
 		//std::cout<<sqrt(converge)<<std::endl;
 		// jk is used to get control over the iteration fault injection
 		jk++;
 		/*
-		// code to inject fault in the same run at various interval 
+		// code to inject fault in the same run at various interval
 		if (jk < 423)
 		{
 		correction_frequency = 10;
@@ -391,13 +388,13 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 		}
 		else if (jk > 847)
 		{
-			correction_frequency = 20;
+		correction_frequency = 20;
 		}
 		*/
-		
+
 		//std::cout << sqrt(converge) << std::endl;
 
-		if (sqrt(converge)<kEpsilon) 
+		if (sqrt(converge)<kEpsilon)
 		{
 			cout << "residual " << sqrt(converge);
 			std::cout << "iteration number: " << iteration << std::endl;
@@ -410,421 +407,429 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 		// remove below if condition to include correction freq
 		//if(iteration == 5) {
 		//if (run) {
-			// comment out the self stabilizing loop
-			
-			run = false;
-			//r=A*x, temp=A*p
-			r = a*x;
-			cout << "Running self stabilizing loop in iteration: " << iteration << endl;
-			vector<double> q = a * p;
+		// comment out the self stabilizing loop
 
-			//ri=b-ri
-			vector<double> tmp(rows);
+		run = false;
+		//r=A*x, temp=A*p
+		r = a*x;
+		cout << "Running self stabilizing loop in iteration: " << iteration << endl;
+		vector<double> q = a * p;
 
-			for (int i = 0; i < rows; i++)
-			{
-				tmp[i] = b[i] - r[i];
-			}
-			
-			r = tmp;
+		//ri=b-ri
+		vector<double> tmp(rows);
 
-			//alpha = ri^tpi/pi^tqi
-			double alpha = inner_product(r, p) / inner_product(p, q);
+		for (int i = 0; i < rows; i++)
+		{
+		tmp[i] = b[i] - r[i];
+		}
+
+		r = tmp;
+
+		//alpha = ri^tpi/pi^tqi
+		double alpha = inner_product(r, p) / inner_product(p, q);
 
 
-			// std::cout<<alpha<<std::endl;
+		// std::cout<<alpha<<std::endl;
 
-			//xi+1=xi+alpha*pi
-			vector<double> xi(rows);
+		//xi+1=xi+alpha*pi
+		vector<double> xi(rows);
 
-			for (int i = 0; i < rows; i++)
-			{
-				xi[i] = (x[i] + (p[i] * alpha));
-			}
+		for (int i = 0; i < rows; i++)
+		{
+		xi[i] = (x[i] + (p[i] * alpha));
+		}
 
-			x = xi;
+		x = xi;
 
-			//ri+1=ri-alpha*q
-			vector <double> ri(rows);
+		//ri+1=ri-alpha*q
+		vector <double> ri(rows);
 
-			for (int i = 0; i < rows; i++)
-			{
-				ri[i] = (r[i] - (q[i] * alpha));
-			}
+		for (int i = 0; i < rows; i++)
+		{
+		ri[i] = (r[i] - (q[i] * alpha));
+		}
 
-			r = ri;
+		r = ri;
 
-			//beta=-r^t*q/p^t*q
-			double temp1 = inner_product(r, q);
-			double temp2 = inner_product(p, q);
-			double beta = -1 * (temp1 / temp2);
+		//beta=-r^t*q/p^t*q
+		double temp1 = inner_product(r, q);
+		double temp2 = inner_product(p, q);
+		double beta = -1 * (temp1 / temp2);
 
-			
-			//pi+1=ri+1+beta*pi
-			vector<double> pi(rows);
 
-			for (int i = 0; i < rows; i++)
-			{
-				pi[i] = (r[i] +  (beta * p[i]));
-			}
+		//pi+1=ri+1+beta*pi
+		vector<double> pi(rows);
 
-			p = pi;
-			
+		for (int i = 0; i < rows; i++)
+		{
+		pi[i] = (r[i] +  (beta * p[i]));
+		}
+
+		p = pi;
+
 		}
 		else
-		
+
 		{
 		*/
-		 // remove this if you want self stabalizing algorithm	
+		// remove this if you want self stabalizing algorithm	
 
-			// This code  snippet allows us inject fault in row, column, value 
-			int ite = 4;
-			int ite2 = 10;
-			if (iteration == ite || iteration == ite2)
-			{
-				//vector<unsigned int> asdf = a.IA();
-				//vector<unsigned int> basdf = a.JA();
+		// This code  snippet allows us inject fault in row, column, value 
+		int ite = 4;
+		int ite2 = 10;
+		if (iteration == ite || iteration == ite2)
+		{
+			//vector<unsigned int> asdf = a.IA();
+			//vector<unsigned int> basdf = a.JA();
 
-				vector<double> aaa = a();
+			vector<double> aaa = a();
 
-				if (iteration == ite) {
-					
-					cout << "Iteration during which fault was injected " << iteration << endl;
-					
-					corruptIt = aaa[0];
-					cout << "Value of in matrix A before corruption " << corruptIt << endl;
-					double corr = corruptIt;
+			if (iteration == ite) {
 
-					//double old_alpha = corruptIt;
-					long long te = *(long long*)&corr;
+				cout << "Iteration during which fault was injected " << iteration << endl;
 
-					
-					//for (int i = 63; i >= 0; i--)
-					// {
-						//std::cout << ((te >> i)&1);
-						//if (i == 63) std::cout << " ";
-						//else if (i == 52) std::cout << " ";
-					// }
-					// create a temp number and then shift it to correct position
-					long long num1 = 1;
-					long long vv = num1 << 61;
-					//std::cout << std::endl;
-					// Now xor the alpha value
-					long long ans = te ^ vv;
-					// for (int i = 63; i >= 0; i--)
-					//{
-						//std::cout << ((ans >> i) & 1);
-						//if (i == 63) std::cout << " ";
-						//else if (i == 52) std::cout << " ";
-					//}
-					//std::cout << std::endl;
-					corr = *(double*)&ans;
-					aaa[0] = corr;
-					cout << "Value after corruption " << corr << endl;
-				}
+				corruptIt = aaa[0];
+				cout << "Value of in matrix A before corruption " << corruptIt << endl;
+				double corr = corruptIt;
 
-				if (iteration == ite2) {
-					corruptIt2 = aaa[7740];
-					cout << "Value in matrix A before corruption " << corruptIt2 << endl;
-					double corr2 = corruptIt2;
+				//double old_alpha = corruptIt;
+				long long te = *(long long*)&corr;
 
-					// corrupt the second value
-					long long te2 = *(long long*)&corr2;
 
-					long long num2 = 1;
-					long long vv2 = num2 << 60;
-					long long ans2 = te2 ^ vv2;
-					
-					corr2 = *(double*)&ans2;
-					aaa[7740] = corr2;
-
-					cout << "Value after corruption of second value " << corr2 << endl;
-				}
-				
-				const vector<double> aaaaa = aaa;
-				a.operator()(aaaaa); 
-
-				//unsigned int flip = 16;
-
-				//unsigned int reVal = corruptIt ^ flip;
-
-				
-				/*
-				// row vector fault injection
-				vector<unsigned int> asdf = a.IA();
-				corruptIt = asdf[1];
-				asdf[1] = 25;
-				a.IA(asdf);
-				*/
-				/*
-				// column vector fault injection
-				vector<unsigned int> asdf = a.JA();
-				corruptIt = asdf[1];
-				asdf[1] = 25;
-				a.JA(asdf);
-				*/
-			}
-			
-
-			// temp = A * p
-			vector<double> q(rows);
-			q = a * p;
-
-			/*
-			// below is the code for block checksum method to detect if there is any fault in Spmv
-			auto sparseErrorScalar = sparseCheckSum * p;
-			double sumAn = 0;
-			int sumAnIt = 0;
-			vector<double> sparseErrorVec(90,0);
-			for (int i = 1; i <= q.size(); i++) {
-				if (i % 10 == 0) {
-					sparseErrorVec[sumAnIt] = sumAn;
-					sumAn = q[i-1];
-					sumAnIt++;
-				}
-				else {
-					sumAn += q[i - 1];
-				}
-			}
-
-			vector<int> errorIndexVec;
-			// now compare the two result
-			for (int i = 0; i < 90; i++) {
-				auto tempErrV = sparseErrorVec[i] - sparseErrorScalar[i];
-				if (abs(tempErrV) > 1000) {
-					// record the error index
-					errorIndexVec.push_back(i);
-					cout << "caught the error at index " << i << endl;
-				}
-
-			}
-
-			// now check for error and re-execute the required block
-			for (auto&i : errorIndexVec) {
-				int startRowPointer = i * 10;
-				auto corAnsBlock = sparseCheckSum.multiplySpecific(p, startRowPointer);
-				// update the ans
-				std::copy_n(corAnsBlock.begin(), corAnsBlock.size(), q.begin()+startRowPointer);
-			}
-			*/
-
-			//int aaaaaaa = 0;
-
-			
-			// below is recursive block checksum mathod
-			// use abft check here to detect if there was any fault while SpMv was done
-			auto cSum = inner_product(p, check1);
-			auto cqSum = std::accumulate(q.begin(), q.end(), 0);
-
-			//auto ft = sqrt(inner_product(x, x));
-
-			bool error = false;
-			// error is detected if
-			if (abs(cSum - cqSum) > 100) {
-				error = true;
-				cout << "error has been detected" << endl;
-				// call the error correction subroutine
-				//auto a1 = inner_product(check2[0], p);
-				//auto a2 = inner_product(check2[1], p);
-				//int expI = 1;
-				while (error) {
-					//int k = pow(2, expI);
-					//vector<double> ans(k,0);
-					int k = 0;
-					int j = 0;
-					while (k < 5){
-						auto f = checkVector[k].vec;
-						vector<bool> ans;
-						for (int i = 0; i < 2; i++) {
-							auto r1 = checkVector[k].idx[ (2*j) + i].first;
-							auto r2 = checkVector[k].idx[ (2 *j) + i].second;
-							// check for the block where error exits
-							//auto endp = vector<double>(p.begin()+ r1, p.begin()+r2);
-							auto a2 = inner_product(checkVector[k].vec[(2 * j) + i], p);
-							auto a3 = accumulate(q.begin() + r1, q.begin() + r2, 0);
-							if (abs(a2 - a3) > 100) {
-								ans.push_back(true);
-								// if this is last iteration then fix the value
-								if (k == 4) {
-									// recompute the lost part
-									auto r3 = r1;
-									for (; r3 < r2; r3++ ) {
-										q[r3] = inner_product(matrixA[r3], p);
-									}
-									error = false;
-								}
-							}
-							else {
-								ans.push_back(false);
-							}	
-						}
-						k++;
-						int id = 0;
-						for (auto const &i : ans) {
-							if (i) {
-								j = id;
-								break;
-							}
-							id++;
-						}
-						ans.clear();
-					}
-				}
-			}
-			// recurisve block checksum approach ends here
-			 
-
-			// alpha = r^2 / (p' * temp)
-			double alpha = inner_product(r, r) / inner_product(p, q);
-
-			// This is the orginal code snippet which is used to get control over fault injection
-			// in any iteration , here the fault is injected in alpha (step length of cg method)
-			/*
-			// Fault injection code
-			if (iteration == 7)
-			{
-				
-				// alpha = rs_old / (p' * temp)
-				std::cout << "Look at the alpha before flip " << alpha << std::endl;
-				double old_alpha = alpha;
-				long long te = *(long long*)&alpha;
-				for (int i = 63; i >= 0; i--)
-				{
-					//std::cout << ((te >> i)&1);
-					//if (i == 63) std::cout << " ";
-					//else if (i == 52) std::cout << " ";
-				}
-
+				//for (int i = 63; i >= 0; i--)
+				// {
+				//std::cout << ((te >> i)&1);
+				//if (i == 63) std::cout << " ";
+				//else if (i == 52) std::cout << " ";
+				// }
 				// create a temp number and then shift it to correct position
 				long long num1 = 1;
 				long long vv = num1 << 61;
 				//std::cout << std::endl;
 				// Now xor the alpha value
 				long long ans = te ^ vv;
-				for (int i = 63; i >= 0; i--)
-				{
-					//std::cout << ((ans >> i) & 1);
-					//if (i == 63) std::cout << " ";
-					//else if (i == 52) std::cout << " ";
-				}
+				// for (int i = 63; i >= 0; i--)
+				//{
+				//std::cout << ((ans >> i) & 1);
+				//if (i == 63) std::cout << " ";
+				//else if (i == 52) std::cout << " ";
+				//}
 				//std::cout << std::endl;
-				alpha = *(double*)&ans;
-				long long tea = *(long long*)&alpha;
-				for (int i = 63; i >= 0; i--)
-				{
-					//std::cout << ((tea >> i) & 1);
-					//if (i == 63) std::cout << " ";
-					//else if (i == 52) std::cout << " ";
-				}
-				//std::cout << "Number after bit " << flipBit + 1 << " is flipped" << " in iteration " << (itt) << "= " << alpha << std::endl;
-				std::cout << "Change in alpha: " << alpha - old_alpha << std::endl;
-				*/
-			//} (def remoce it)
-
-			//std::cout<<alpha<<std::endl;
-			vector<double> xi(rows);
-
-			// xi = x + alpha * p
-			for (int i = 0; i < rows; i++)
-			{
-				xi[i] = (x[i] + (alpha * p[i]) );
+				corr = *(double*)&ans;
+				aaa[0] = corr;
+				cout << "Value after corruption " << corr << endl;
 			}
 
-			
-			x = xi;
+			if (iteration == ite2) {
+				corruptIt2 = aaa[7740];
+				cout << "Value in matrix A before corruption " << corruptIt2 << endl;
+				double corr2 = corruptIt2;
 
-			// ri+1 = ri - alpha * temp			
+				// corrupt the second value
+				long long te2 = *(long long*)&corr2;
 
-			vector<double> ri(rows);
+				long long num2 = 1;
+				long long vv2 = num2 << 60;
+				long long ans2 = te2 ^ vv2;
 
-			for (int i = 0; i < rows; i++)
-			{
-				ri[i] = (r[i] - (alpha * q[i]) );
+				corr2 = *(double*)&ans2;
+				aaa[7740] = corr2;
+
+				cout << "Value after corruption of second value " << corr2 << endl;
 			}
 
-			
+			const vector<double> aaaaa = aaa;
+			a.operator()(aaaaa);
 
-			//beta=ri+1 ^2 / ri^2
-			double beta = inner_product(ri, ri) / inner_product(r, r);
-			
-			r = ri;
+			//unsigned int flip = 16;
 
-			// pi = ri + (beta) * p
-			vector<double> p1(rows);
+			//unsigned int reVal = corruptIt ^ flip;
 
-			for (int i = 0; i < rows; i++)
-			{
-				p1[i] = (r[i] + (beta * p[i]));
-			}
 
-			p = p1;
-
-			//std::cout << sqrt(converge) << endl;
-			converge = inner_product(r, r);
-
-			// norm code
-			// calculate relative A norm
 			/*
-			vector<double> ans1(rows);
-			for (unsigned int i = 0; i < xans.size(); i++)
-			{
-				ans1[i] = xans[i] - x[i];
-			}
-			vector<double> norm1 = a * ans1;
-			double norm = inner_product(norm1, ans1);
-			double normAns = sqrt(norm);
-			if (iteration % 50 == 0)
-			{
-				cout << normAns << endl;
-			}
+			// row vector fault injection
+			vector<unsigned int> asdf = a.IA();
+			corruptIt = asdf[1];
+			asdf[1] = 25;
+			a.IA(asdf);
 			*/
-			// This is code snippet helps us to mimic the transient error since we flip the corrupted
-			// values back to orginal value
-			if (iteration == ite || iteration == ite2)
-			{
-				vector<double> aaaa = a();	
-
-				if (iteration == ite) {
-					aaaa[0] = corruptIt;
-					cout << "Value has been flipped back " << corruptIt << endl;
-				}
-
-				if (iteration == ite2) {
-					// insert second fault
-					aaaa[7740] = corruptIt2;
-					cout << "Second value has been flipped back " << corruptIt2 << endl;
-				}
-				
-				const vector<double>aa = aaaa;
-				a.operator()(aa);
-				
-				/*
-				// restoring corrupted row index value
-				vector<unsigned int> asdf = a.IA();
-				asdf[1] = corruptIt;
-				a.IA(asdf);
-				*/
-				/*
-				// resoring corrupted column index value
-				vector<unsigned int> asdf = a.JA();
-				asdf[1] = corruptIt;
-				a.JA(asdf);
-				*/
-
-			}
-			/*/
-			//// in-variant condition
-			auto inValue = inner_product(p, q);
-			if (inValue > 0.1) {
-				run = true;
-				cnt++;
-				std::cout << "Error was catched " << cnt << endl;
-			}
+			/*
+			// column vector fault injection
+			vector<unsigned int> asdf = a.JA();
+			corruptIt = asdf[1];
+			asdf[1] = 25;
+			a.JA(asdf);
 			*/
-			
-//remove this if you want to inlcude self stabalizing algorithm		
-// Add { if you want self stabilizng loop 			
-			
+		}
+
+
+		// temp = A * p
+		vector<double> q(rows);
+		q = a * p;
+
+		/*
+		// below is the code for block checksum method to detect if there is any fault in Spmv
+		auto sparseErrorScalar = sparseCheckSum * p;
+		double sumAn = 0;
+		int sumAnIt = 0;
+		vector<double> sparseErrorVec(90,0);
+		for (int i = 1; i <= q.size(); i++) {
+		if (i % 10 == 0) {
+		sparseErrorVec[sumAnIt] = sumAn;
+		sumAn = q[i-1];
+		sumAnIt++;
+		}
+		else {
+		sumAn += q[i - 1];
+		}
+		}
+
+		vector<int> errorIndexVec;
+		// now compare the two result
+		for (int i = 0; i < 90; i++) {
+		auto tempErrV = sparseErrorVec[i] - sparseErrorScalar[i];
+		if (abs(tempErrV) > 1000) {
+		// record the error index
+		errorIndexVec.push_back(i);
+		cout << "caught the error at index " << i << endl;
+		}
+
+		}
+
+		// now check for error and re-execute the required block
+		for (auto&i : errorIndexVec) {
+		int startRowPointer = i * 10;
+		auto corAnsBlock = sparseCheckSum.multiplySpecific(p, startRowPointer);
+		// update the ans
+		std::copy_n(corAnsBlock.begin(), corAnsBlock.size(), q.begin()+startRowPointer);
+		}
+		*/
+
+		//int aaaaaaa = 0;
+
+
+		// below is recursive block checksum mathod
+		// use abft check here to detect if there was any fault while SpMv was done
+		auto cSum = inner_product(p, check1);
+		auto cqSum = std::accumulate(q.begin(), q.end(), 0);
+
+		//auto ft = sqrt(inner_product(x, x));
+
+		bool error = false;
+		// error is detected if
+		if (abs(cSum - cqSum) > 100) {
+			error = true;
+			cout << "error has been detected" << endl;
+			// call the error correction subroutine
+			//auto a1 = inner_product(check2[0], p);
+			//auto a2 = inner_product(check2[1], p);
+			//int expI = 1;
+			while (error) {
+				//int k = pow(2, expI);
+				//vector<double> ans(k,0);
+				int k = 0;
+				int j = 0;
+				vector<bool> ans;
+				while (k < 5) {
+					auto f = checkVector[k].vec;
+					
+					for (int i = 0; i < 2; i++) {
+						//auto r1 = checkVector[k].idx[(2 * j) + i].first;
+						//auto r2 = checkVector[k].idx[(2 * j) + i].second;
+
+						auto r1 = checkVector[k].idx[j + i].first;
+						auto r2 = checkVector[k].idx[j + i].second;
+
+						// check for the block where error exits
+						//auto endp = vector<double>(p.begin()+ r1, p.begin()+r2);
+						//auto a2 = inner_product(checkVector[k].vec[(2 * j) + i], p);
+						auto a2 = inner_product(checkVector[k].vec[j + i], p);
+						auto a3 = accumulate(q.begin() + r1, q.begin() + r2, 0);
+						if (abs(a2 - a3) > 100) {
+							ans.push_back(true);
+							// if this is last iteration then fix the value
+							if (k == 4) {
+								// recompute the lost part
+								auto r3 = r1;
+								for (; r3 < r2; r3++) {
+									q[r3] = inner_product(matrixA[r3], p);
+								}
+								error = false;
+							}
+						}
+						else {
+							ans.push_back(false);
+						}
+					}
+					k++;
+					int id = 0;
+					for (auto  &i : ans) {
+						if (i) {
+							j += id;
+							j = j * 2;
+ 							i = false;
+							break;
+						}
+						id++;
+					}
+					ans.clear();
+				}
+			}
+		}
+		// recurisve block checksum approach ends here
+
+
+		// alpha = r^2 / (p' * temp)
+		double alpha = inner_product(r, r) / inner_product(p, q);
+
+		// This is the orginal code snippet which is used to get control over fault injection
+		// in any iteration , here the fault is injected in alpha (step length of cg method)
+		/*
+		// Fault injection code
+		if (iteration == 7)
+		{
+
+		// alpha = rs_old / (p' * temp)
+		std::cout << "Look at the alpha before flip " << alpha << std::endl;
+		double old_alpha = alpha;
+		long long te = *(long long*)&alpha;
+		for (int i = 63; i >= 0; i--)
+		{
+		//std::cout << ((te >> i)&1);
+		//if (i == 63) std::cout << " ";
+		//else if (i == 52) std::cout << " ";
+		}
+
+		// create a temp number and then shift it to correct position
+		long long num1 = 1;
+		long long vv = num1 << 61;
+		//std::cout << std::endl;
+		// Now xor the alpha value
+		long long ans = te ^ vv;
+		for (int i = 63; i >= 0; i--)
+		{
+		//std::cout << ((ans >> i) & 1);
+		//if (i == 63) std::cout << " ";
+		//else if (i == 52) std::cout << " ";
+		}
+		//std::cout << std::endl;
+		alpha = *(double*)&ans;
+		long long tea = *(long long*)&alpha;
+		for (int i = 63; i >= 0; i--)
+		{
+		//std::cout << ((tea >> i) & 1);
+		//if (i == 63) std::cout << " ";
+		//else if (i == 52) std::cout << " ";
+		}
+		//std::cout << "Number after bit " << flipBit + 1 << " is flipped" << " in iteration " << (itt) << "= " << alpha << std::endl;
+		std::cout << "Change in alpha: " << alpha - old_alpha << std::endl;
+		*/
+		//} (def remoce it)
+
+		//std::cout<<alpha<<std::endl;
+		vector<double> xi(rows);
+
+		// xi = x + alpha * p
+		for (int i = 0; i < rows; i++)
+		{
+			xi[i] = (x[i] + (alpha * p[i]));
+		}
+
+
+		x = xi;
+
+		// ri+1 = ri - alpha * temp			
+
+		vector<double> ri(rows);
+
+		for (int i = 0; i < rows; i++)
+		{
+			ri[i] = (r[i] - (alpha * q[i]));
+		}
+
+
+
+		//beta=ri+1 ^2 / ri^2
+		double beta = inner_product(ri, ri) / inner_product(r, r);
+
+		r = ri;
+
+		// pi = ri + (beta) * p
+		vector<double> p1(rows);
+
+		for (int i = 0; i < rows; i++)
+		{
+			p1[i] = (r[i] + (beta * p[i]));
+		}
+
+		p = p1;
+
+		//std::cout << sqrt(converge) << endl;
+		converge = inner_product(r, r);
+
+		// norm code
+		// calculate relative A norm
+		/*
+		vector<double> ans1(rows);
+		for (unsigned int i = 0; i < xans.size(); i++)
+		{
+		ans1[i] = xans[i] - x[i];
+		}
+		vector<double> norm1 = a * ans1;
+		double norm = inner_product(norm1, ans1);
+		double normAns = sqrt(norm);
+		if (iteration % 50 == 0)
+		{
+		cout << normAns << endl;
+		}
+		*/
+		// This is code snippet helps us to mimic the transient error since we flip the corrupted
+		// values back to orginal value
+		if (iteration == ite || iteration == ite2)
+		{
+			vector<double> aaaa = a();
+
+			if (iteration == ite) {
+				aaaa[0] = corruptIt;
+				cout << "Value has been flipped back " << corruptIt << endl;
+			}
+
+			if (iteration == ite2) {
+				// insert second fault
+				aaaa[7740] = corruptIt2;
+				cout << "Second value has been flipped back " << corruptIt2 << endl;
+			}
+
+			const vector<double>aa = aaaa;
+			a.operator()(aa);
+
+			/*
+			// restoring corrupted row index value
+			vector<unsigned int> asdf = a.IA();
+			asdf[1] = corruptIt;
+			a.IA(asdf);
+			*/
+			/*
+			// resoring corrupted column index value
+			vector<unsigned int> asdf = a.JA();
+			asdf[1] = corruptIt;
+			a.JA(asdf);
+			*/
+
+		}
+		/*/
+		//// in-variant condition
+		auto inValue = inner_product(p, q);
+		if (inValue > 0.1) {
+		run = true;
+		cnt++;
+		std::cout << "Error was catched " << cnt << endl;
+		}
+		*/
+
+		//remove this if you want to inlcude self stabalizing algorithm		
+		// Add { if you want self stabilizng loop 			
+
 	}
 
 	if (!isConvergence) {
@@ -833,7 +838,7 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 		//std::cout << "Total number of times error was catched " << cnt << endl;
 	}
 
-	
+
 
 }
 
@@ -843,12 +848,12 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 
 
 
-int main(int argc, char* argv[]) 
+int main(int argc, char* argv[])
 {
-	
+
 	fstream read;
 
-	read.open(R"(gr_30_30.mtx)", ios::in);
+	read.open(R"(C:\Users\aadit\Documents\gr_30_30.mtx)", ios::in);
 
 	int row = 0; int col = 0; float value = 0; //get the value
 	read >> rows; read >> cols; read >> nonezero;
@@ -858,7 +863,7 @@ int main(int argc, char* argv[])
 	//SparseMatrix mat(rows, cols);
 	myg::SparseMatrix<unsigned int, double> A(rows); // rows x rows identity matrix
 
-	
+
 
 	while (!read.eof()) {
 		read >> row;
@@ -887,15 +892,15 @@ int main(int argc, char* argv[])
 	double ansValue = 0;
 	while (!read1.eof())
 	{
-		read1 >> ansValue;
-		xans[p] = ansValue;
-		p++;
+	read1 >> ansValue;
+	xans[p] = ansValue;
+	p++;
 	}
 	*/
 	/*
 	rows = 2;
 	myg::SparseMatrix<unsigned int, double> A(rows); // rows x rows identity matrix
-	
+
 	A(0, 0, 4);
 	A(0, 1, 1);
 	A(1, 0, 1);
@@ -903,25 +908,25 @@ int main(int argc, char* argv[])
 	*/
 	vector<double> b(rows);
 	for (int i = 0; i < rows; i++) {
-		b[i]=1;
+		b[i] = 1;
 	}
 
 	vector<double> x(rows);
 
-	
+
 	//vector<unsigned int> asdf = A.IA();
 	//vector<unsigned int> basdf = A.JA();
 
 	/*
 	for (int i = 0; i < asdf.size(); i++)
 	{
-		cout << asdf[i] << endl;
+	cout << asdf[i] << endl;
 	}
 	cout << "New Line" << endl;
 	/*
 	for (int i = 0; i < basdf.size(); i++)
 	{
-		cout << basdf[i] << "";
+	cout << basdf[i] << "";
 	}
 	*/
 	conjugate_gradient(A, b, 2000, x);
@@ -929,10 +934,10 @@ int main(int argc, char* argv[])
 	/*
 	for (int i = 0; i < x.size(); i++)
 	{
-		cout << x[i] << endl;
+	cout << x[i] << endl;
 	}
 	*/
 	system("pause");
 	return 0;
-	
+
 }
