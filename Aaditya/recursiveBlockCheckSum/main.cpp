@@ -5,6 +5,7 @@
 #include <fstream>
 #include <numeric>
 #include <algorithm>
+#include <chrono>
 
 using namespace std;
 using namespace myg;
@@ -269,9 +270,11 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 	int iteration;
 	double converge = 1;
 
+	// start the timer
+	auto time_1 = std::chrono::high_resolution_clock::now();
+
 	for (iteration = 0; iteration < num_iterations + 500; iteration++)
 	{
-
 		converge = inner_product(r, r);
 		//std::cout<<sqrt(converge)<<std::endl;
 
@@ -369,7 +372,7 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 									q[r3] = inner_product(matrixA[r3], p);
 								}
 								error = false;
-								cout << endl << "Error has been fixed " << endl;
+								cout << "Error has been fixed. It was in  " << j+i << " block "<< endl;
 							}
 						}
 						else {
@@ -378,7 +381,7 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 					}
 					k++;
 					int id = 0;
-					for (auto &i : ans) {
+					for (auto const &i : ans) {
 						if (i) {
 							j += id;
 							j = j * 2;
@@ -399,6 +402,8 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 					ans.clear();
 				}
 			}
+
+			cout << endl;
 
 			// check if more errors exits
 			while (moreErrors) {
@@ -427,7 +432,7 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 								for (; r3 < r2; r3++) {
 									q[r3] = inner_product(matrixA[r3], p);
 								}
-								cout << "Error 2 has been fixed " << endl;
+								cout << "Error has been fixed. It was in  " << j+i << " block "<< endl;
 								moreErrors = false;
 							}
 						}
@@ -438,7 +443,7 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 
 					k++;
 					int id = 0;
-					for (auto &i : ans) {
+					for (auto const &i : ans) {
 						if (i) {
 							j += id;
 							j = j * 2;
@@ -508,7 +513,11 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 			a.operator()(aa);
 		}
 
-	}
+	} 		
+
+	// end timer
+	auto time_2 = std::chrono::high_resolution_clock::now();
+	cout << "Time for execution in ms " << chrono::duration_cast<std::chrono::milliseconds>(time_2-time_1).count() << endl;
 
 	if (!isConvergence) {
 		std::cout << "Does not converge after " << iteration << std::endl;
@@ -522,10 +531,11 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 
 int main(int argc, char* argv[])
 {
+	cout << endl;
 
 	fstream read;
 
-	read.open(R"(C:\Users\aadit\Documents\gr_30_30.mtx)", ios::in);
+	read.open(R"(gr_30_30.mtx)", ios::in);
 
 	int row = 0; int col = 0; float value = 0; //get the value
 	read >> rows; read >> cols; read >> nonezero;
@@ -568,6 +578,8 @@ int main(int argc, char* argv[])
 	cout << x[i] << endl;
 	}
 	*/
-	system("pause");
+
+	
+	//system("pause");
 	return 0;
 }
