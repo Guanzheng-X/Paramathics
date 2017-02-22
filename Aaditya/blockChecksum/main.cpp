@@ -51,6 +51,12 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 	auto rowPointer = a.IA();
 	auto colPointer = a.JA();
 	auto valPointer = a();
+
+	int ere = 0;
+	for (auto&i : valPointer) {
+		cout << ere <<"  " << i << endl;
+		ere++;
+	}
 	/*
 	// let's start with the block size of 10
 	vector<vector<double>> blockCheckSum;
@@ -341,6 +347,7 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 	//unsigned int corruptIt = 0;
 	// use this declaration for fault injection in A matrix value
 	double corruptIt = 0;
+	double corruptIt2 = 0;
 	// A multiply x0
 	ax = a * x;
 
@@ -472,53 +479,76 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 
 			// This code  snippet allows us inject fault in row, column, value 
 			int ite = 4;
-			if (iteration == ite)
+			int ite2 = 10;
+			if (iteration == ite || iteration == ite2)
 			{
 				//vector<unsigned int> asdf = a.IA();
 				//vector<unsigned int> basdf = a.JA();
-				
+
 				vector<double> aaa = a();
-				cout << "Iteration during which fault was injected " << iteration << endl;
+
+				if (iteration == ite) {
+					
+					cout << "Iteration during which fault was injected " << iteration << endl;
+					
+					corruptIt = aaa[0];
+					cout << "Value of in matrix A before corruption " << corruptIt << endl;
+					double corr = corruptIt;
+
+					//double old_alpha = corruptIt;
+					long long te = *(long long*)&corr;
+
+					
+					//for (int i = 63; i >= 0; i--)
+					// {
+						//std::cout << ((te >> i)&1);
+						//if (i == 63) std::cout << " ";
+						//else if (i == 52) std::cout << " ";
+					// }
+					// create a temp number and then shift it to correct position
+					long long num1 = 1;
+					long long vv = num1 << 61;
+					//std::cout << std::endl;
+					// Now xor the alpha value
+					long long ans = te ^ vv;
+					// for (int i = 63; i >= 0; i--)
+					//{
+						//std::cout << ((ans >> i) & 1);
+						//if (i == 63) std::cout << " ";
+						//else if (i == 52) std::cout << " ";
+					//}
+					//std::cout << std::endl;
+					corr = *(double*)&ans;
+					aaa[0] = corr;
+					cout << "Value after corruption " << corr << endl;
+				}
+
+				if (iteration == ite2) {
+					corruptIt2 = aaa[7740];
+					cout << "Value in matrix A before corruption " << corruptIt2 << endl;
+					double corr2 = corruptIt2;
+
+					// corrupt the second value
+					long long te2 = *(long long*)&corr2;
+
+					long long num2 = 1;
+					long long vv2 = num2 << 60;
+					long long ans2 = te2 ^ vv2;
+					
+					corr2 = *(double*)&ans2;
+					aaa[7740] = corr2;
+
+					cout << "Value after corruption of second value " << corr2 << endl;
+				}
 				
-				//unsigned int corruptIt = aaa[0];
-				 corruptIt = aaa[0];
-				 cout << "Value of in matrix A before corruption " << corruptIt << endl;
-				 double corr = corruptIt;
-
-				 //double old_alpha = corruptIt;
-				 long long te = *(long long*)&corr;
-				 //for (int i = 63; i >= 0; i--)
-				// {
-					 //std::cout << ((te >> i)&1);
-					 //if (i == 63) std::cout << " ";
-					 //else if (i == 52) std::cout << " ";
-				// }
-
-				 // create a temp number and then shift it to correct position
-				 long long num1 = 1;
-				 long long vv = num1 << 61;
-				 //std::cout << std::endl;
-				 // Now xor the alpha value
-				 long long ans = te ^ vv;
-				// for (int i = 63; i >= 0; i--)
-				 //{
-					 //std::cout << ((ans >> i) & 1);
-					 //if (i == 63) std::cout << " ";
-					 //else if (i == 52) std::cout << " ";
-				 //}
-				 //std::cout << std::endl;
-				 corr = *(double*)&ans;
+				const vector<double> aaaaa = aaa;
+				a.operator()(aaaaa); 
 
 				//unsigned int flip = 16;
 
 				//unsigned int reVal = corruptIt ^ flip;
 
-				aaa[0] = corr;
-				cout << "Value after corruption " << corr << endl;
-				const vector<double> aaaaa = aaa;
-				a.operator()(aaaaa);
 				
-
 				/*
 				// row vector fault injection
 				vector<unsigned int> asdf = a.IA();
@@ -630,7 +660,7 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 						}
 						k++;
 						int id = 0;
-						for (auto &i : ans) {
+						for (auto const &i : ans) {
 							if (i) {
 								j = id;
 								break;
@@ -750,12 +780,21 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 			*/
 			// This is code snippet helps us to mimic the transient error since we flip the corrupted
 			// values back to orginal value
-			if (iteration == ite)
+			if (iteration == ite || iteration == ite2)
 			{
+				vector<double> aaaa = a();	
+
+				if (iteration == ite) {
+					aaaa[0] = corruptIt;
+					cout << "Value has been flipped back " << corruptIt << endl;
+				}
+
+				if (iteration == ite2) {
+					// insert second fault
+					aaaa[7740] = corruptIt2;
+					cout << "Second value has been flipped back " << corruptIt2 << endl;
+				}
 				
-				vector<double> aaaa = a();				
-				aaaa[0] = corruptIt;
-				cout << "Value has been flipped back " << corruptIt << endl;
 				const vector<double>aa = aaaa;
 				a.operator()(aa);
 				
@@ -809,7 +848,7 @@ int main(int argc, char* argv[])
 	
 	fstream read;
 
-	read.open(R"(C:\Users\aadit\Documents\gr_30_30.mtx)", ios::in);
+	read.open(R"(gr_30_30.mtx)", ios::in);
 
 	int row = 0; int col = 0; float value = 0; //get the value
 	read >> rows; read >> cols; read >> nonezero;
