@@ -189,7 +189,7 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 			vector<double> aaa = a();
 			cout << "Iteration during which fault was injected " << iteration << endl;
 
-			corruptIt = aaa[0];
+			corruptIt = aaa[704];
 			cout << "Value of in matrix A before corruption " << corruptIt << endl;
 			double corr = corruptIt;
 
@@ -199,10 +199,10 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 
 			long long ans = te ^ vv;
 			corr = *(double*)&ans;
-			aaa[0] = corr;
+			aaa[704] = corr;
 			cout << "Value after corruption " << corr << endl;
 
-			corruptIt2 = aaa[7740];
+			corruptIt2 = aaa[3149];
 			cout << "Value in matrix A before corruption " << corruptIt2 << endl;
 			double corr2 = corruptIt2;
 
@@ -213,7 +213,7 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 			long long ans2 = te2 ^ vv2;
 
 			corr2 = *(double*)&ans2;
-			aaa[7740] = corr2;
+			aaa[3149] = corr2;
 			cout << "Value after corruption of second value " << corr2 << endl;
 
 			const vector<double> aaaaa = aaa;
@@ -326,11 +326,11 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 		{
 			vector<double> aaaa = a();
 
-			aaaa[0] = corruptIt;
+			aaaa[704] = corruptIt;
 			cout << "Value has been restored back " << corruptIt << endl;
 
 			// insert second fault
-			aaaa[7740] = corruptIt2;
+			aaaa[3149] = corruptIt2;
 			cout << "Second value has been restored back " << corruptIt2 << endl;
 
 			const vector<double>aa = aaaa;
@@ -361,7 +361,7 @@ int main(int argc, char* argv[])
 
 	fstream read;
 
-	read.open(R"(C:\Users\aadit\Documents\gr_30_30.mtx)", ios::in);
+	read.open(R"(gr_30_30.mtx)", ios::in);
 
 	int row = 0; int col = 0; float value = 0; //get the value
 	read >> rows; read >> cols; read >> nonezero;
