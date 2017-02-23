@@ -223,14 +223,14 @@ vector<fT> SparseMatrix<iT, fT>::operator*(const vector<fT> v) const {
 * @return result of vector multiplication
 */
 template<typename iT, typename fT>
-vector<fT> myg::SparseMatrix<iT, fT>:: multiplySpecific(const vector<fT> v, int startIdx) const
+vector<fT> myg::SparseMatrix<iT, fT>::multiplySpecific(const vector<fT> v, int startIdx) const
 {
 	// initialise local variables
 	fT rowsum;
 	vector<fT> ret;
 	// check dimensions
 	if (Dim() == v.size())
-		for (iT i = startIdx; i<startIdx + 11; i++) {
+		for (iT i = startIdx; i<startIdx + 10; i++) {
 			rowsum = zero_;
 			for (iT j = ia_.at(i); j<ia_.at(i + 1); j++)
 				rowsum += v.at(ja_.at(j))*a_.at(j);
@@ -304,7 +304,7 @@ SparseMatrix<iT, fT>& SparseMatrix<iT, fT>::operator+=(const SparseMatrix<iT, fT
 	// perform addition
 	for (typename std::set<std::pair<iT, iT> >::iterator i = sp.begin(); i != sp.end(); i++)
 		(*this)((*i).first, (*i).second,
-			(*this)((*i).first, (*i).second) + m((*i).first, (*i).second));
+		(*this)((*i).first, (*i).second) + m((*i).first, (*i).second));
 
 	// return result
 	return (*this);
@@ -323,7 +323,7 @@ SparseMatrix<iT, fT>& SparseMatrix<iT, fT>::operator-=(const SparseMatrix<iT, fT
 	// perform subtraction
 	for (typename std::set<std::pair<iT, iT> >::iterator i = sp.begin(); i != sp.end(); i++)
 		(*this)((*i).first, (*i).second,
-			(*this)((*i).first, (*i).second) - m((*i).first, (*i).second));
+		(*this)((*i).first, (*i).second) - m((*i).first, (*i).second));
 
 	// return result
 	return (*this);
@@ -458,7 +458,7 @@ template <typename iT, typename fT>
 void SparseMatrix<iT, fT>::rowOp(iT row_1, iT row_2, fT alpha) {
 	for (iT j = ia_.at(row_2); j<ia_.at(row_2 + 1); j++)
 		(*this)(row_1, ja_.at(j),
-			(*this)(row_1, ja_.at(j)) - alpha*(*this)(row_2, ja_.at(j)));
+		(*this)(row_1, ja_.at(j)) - alpha*(*this)(row_2, ja_.at(j)));
 }
 
 /**
