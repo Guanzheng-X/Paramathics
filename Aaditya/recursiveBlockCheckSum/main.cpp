@@ -53,6 +53,13 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 	auto colPointer = a.JA();
 	auto valPointer = a();
 
+	// print the valPointer so that we know where to inject faults
+	// now write the csv file into txt file
+	ofstream valFile("valPointer.txt");
+	for (int i = 0; i < valPointer.size(); i++) {
+		valFile << i + 1 << " " << valPointer[i] << endl;
+	}
+
 	// This is recursive block checksum approach idea to implement checksum matrix
 
 	// make one check sum matrix
@@ -288,14 +295,14 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 
 
 		// This code  snippet allows us inject fault in row, column, value 
-		int ite = 4;
+		int ite = 30;
 
 		if (iteration == ite)
 		{
 			vector<double> aaa = a();
 			cout << "Iteration during which fault was injected " << iteration << endl;
 
-			corruptIt = aaa[0];
+			corruptIt = aaa[704];
 			cout << "Value of in matrix A before corruption " << corruptIt << endl;
 			double corr = corruptIt;
 
@@ -305,11 +312,11 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 
 			long long ans = te ^ vv;
 			corr = *(double*)&ans;
-			aaa[0] = corr;
+			aaa[704] = corr;
 			cout << "Value after corruption " << corr << endl;
 
 
-			corruptIt2 = aaa[7740];
+			corruptIt2 = aaa[3149];
 			cout << "Value in matrix A before corruption " << corruptIt2 << endl;
 			double corr2 = corruptIt2;
 
@@ -320,7 +327,7 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 			long long ans2 = te2 ^ vv2;
 
 			corr2 = *(double*)&ans2;
-			aaa[7740] = corr2;
+			aaa[3149] = corr2;
 			cout << "Value after corruption of second value " << corr2 << endl;
 
 			const vector<double> aaaaa = aaa;
@@ -502,11 +509,11 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 		{
 			vector<double> aaaa = a();
 
-			aaaa[0] = corruptIt;
+			aaaa[704] = corruptIt;
 			cout << "Value has been restored back " << corruptIt << endl;
 
 			// insert second fault
-			aaaa[7740] = corruptIt2;
+			aaaa[3149] = corruptIt2;
 			cout << "Second value has been restored back " << corruptIt2 << endl;
 
 			const vector<double>aa = aaaa;
