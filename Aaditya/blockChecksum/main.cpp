@@ -54,7 +54,7 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 	auto valPointer = a();
 
 	//int ere = 0;
-	
+
 	/*
 	// let's start with the block size of 10
 	vector<vector<double>> blockCheckSum;
@@ -64,19 +64,19 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 	int rowIdx = 1;
 
 	while (cntValue > 0) {
-		auto tmpCount = blockCount;
-		// add the row into blockCheckSum matrix and decrement the count of tmpCount
-		while (tmpCount > 0) {
-			if (tmpCount > rowPointer[rowIdx - 1] - rowPointer[rowIdx]) {
-			int l = rowPointer[rowIdx - 1] - rowPointer[rowIdx];
-			// get the rowSize of the matrix A
-			vector<double> ins(rowPointer.size()/10, 0);
-				for (; l > 0; l--) {
-					ins[colPointer[l]] = valPointer[l];
-				}
-			}
-		}
-		cntValue--;
+	auto tmpCount = blockCount;
+	// add the row into blockCheckSum matrix and decrement the count of tmpCount
+	while (tmpCount > 0) {
+	if (tmpCount > rowPointer[rowIdx - 1] - rowPointer[rowIdx]) {
+	int l = rowPointer[rowIdx - 1] - rowPointer[rowIdx];
+	// get the rowSize of the matrix A
+	vector<double> ins(rowPointer.size()/10, 0);
+	for (; l > 0; l--) {
+	ins[colPointer[l]] = valPointer[l];
+	}
+	}
+	}
+	cntValue--;
 	}
 
 
@@ -87,28 +87,28 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 
 	int denseRowIt = 0;
 	for (int i = 0; i < matrixA.size(); i++) {
-		if (i == 0) {
-		}
-		else {
-			if (i % 10 == 0) {
-				denseRowIt++;
-			}
-		}
-		// now run through the matrixA to construct dense block checksum matrix
-		for (int j = 0; j < cols; j++) {
-			denseCheckMatrix[denseRowIt][j] += matrixA[i][j];
-		}
+	if (i == 0) {
+	}
+	else {
+	if (i % 10 == 0) {
+	denseRowIt++;
+	}
+	}
+	// now run through the matrixA to construct dense block checksum matrix
+	for (int j = 0; j < cols; j++) {
+	denseCheckMatrix[denseRowIt][j] += matrixA[i][j];
+	}
 	}
 
 	// now write the csv file into txt file
 	ofstream denseMat("densechecksummatrix.txt");
 	denseMat << 90 << " " << 900 << " " << 2992 << endl;;
-	
+
 	for (int i = 0; i < denseCheckMatrix.size(); i++) {
-		for (int j = 0; j < cols; j++) {
-			if (denseCheckMatrix[i][j] != 0)
-				denseMat << i + 1 << " " << j + 1 << " " << denseCheckMatrix[i][j] << endl;
-		}
+	for (int j = 0; j < cols; j++) {
+	if (denseCheckMatrix[i][j] != 0)
+	denseMat << i + 1 << " " << j + 1 << " " << denseCheckMatrix[i][j] << endl;
+	}
 	}
 	*/
 
@@ -224,28 +224,50 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 		vector<double> q(rows);
 		q = a * p;
 
-		
+
 		// below is the code for block checksum method to detect if there is any fault in Spmv
 		auto sparseErrorScalarVector = sparseCheckSum * p;
 		double sumAn = 0;
 		int sumAnIt = 0;
-		vector<double> sparseErrorVec(90,0);
+		vector<double> sparseErrorVec(90, 0);
+		vector<double> sparseErrorSum(90, 0);
 
-		for (int i = 1; i <= q.size(); i++) {
-			if (i % 10 == 0) {
+		for (int i = 0; i < q.size(); i++) {
+
+			if ((i+1) % 10 == 0) {
 				sparseErrorVec[sumAnIt] = sumAn;
-				sumAn = q[i-1];
+				sumAn = q[i];
 				sumAnIt++;
 			}
 			else {
-				sumAn += q[i - 1];
+				sumAn += q[i];
 			}
 		}
+
+		// update the last summed value
+		sparseErrorVec[sparseErrorVec.size() - 1] += sumAn;
+
+		sumAn = 0;
+		sumAnIt = 0;
+		// shrink the sparseErrorScalarVector 
+		for (int i = 0; i < sparseErrorScalarVector.size(); i++) {
+			if ((i+1) % 10 == 0) {
+				sparseErrorSum[sumAnIt] = sumAn;
+				sumAn = sparseErrorScalarVector[i];
+				sumAnIt++;
+			}
+			else {
+				sumAn += sparseErrorScalarVector[i];
+			}
+		}
+
+		// update the last summed value
+		sparseErrorScalarVector[sparseErrorScalarVector.size() - 1] += sumAn;
 
 		vector<int> errorIndexVec;
 		// now compare the two result
 		for (int i = 0; i < 90; i++) {
-			auto tempErrV = sparseErrorVec[i] - sparseErrorScalarVector[i];
+			auto tempErrV = sparseErrorVec[i] - sparseErrorSum[i];
 			if (abs(tempErrV) > 1000) {
 				// record the error index
 				errorIndexVec.push_back(i);
@@ -258,8 +280,8 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 			int startRowPointer = i * 10;
 			auto corAnsBlock = sparseCheckSum.multiplySpecific(p, startRowPointer);
 			// update the ans
-			std::copy_n(corAnsBlock.begin(), corAnsBlock.size(), q.begin()+startRowPointer);
-			}
+			std::copy_n(corAnsBlock.begin(), corAnsBlock.size(), q.begin() + startRowPointer);
+		}
 
 		//int aaaaaaa = 0;
 
@@ -272,7 +294,7 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 			xi[i] = (x[i] + (alpha * p[i]));
 		}
 
-		x = xi;		
+		x = xi;
 
 		vector<double> ri(rows);
 
@@ -319,7 +341,7 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 
 	// end timer
 	auto time_2 = std::chrono::high_resolution_clock::now();
-	cout << "Time for execution in ms " << chrono::duration_cast<std::chrono::milliseconds>(time_2-time_1).count() << endl;
+	cout << "Time for execution in ms " << chrono::duration_cast<std::chrono::milliseconds>(time_2 - time_1).count() << endl;
 
 	if (!isConvergence) {
 		std::cout << "Does not converge after " << iteration << std::endl;
@@ -339,7 +361,7 @@ int main(int argc, char* argv[])
 
 	fstream read;
 
-	read.open(R"(gr_30_30.mtx)", ios::in);
+	read.open(R"(C:\Users\aadit\Documents\gr_30_30.mtx)", ios::in);
 
 	int row = 0; int col = 0; float value = 0; //get the value
 	read >> rows; read >> cols; read >> nonezero;
@@ -373,7 +395,7 @@ int main(int argc, char* argv[])
 	}
 
 	vector<double> x(rows);
-	
+
 	conjugate_gradient(A, b, 2000, x);
 
 	/*
