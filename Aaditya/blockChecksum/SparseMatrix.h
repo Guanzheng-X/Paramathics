@@ -50,7 +50,7 @@ namespace myg {
 		SparseMatrix    operator-(const SparseMatrix& m) const;
 		SparseMatrix    operator*(fT alpha) const;
 		std::vector<fT> operator*(const std::vector<fT> v) const;
-		std::vector<fT> multiplySpecific( std::vector<fT> v, int startIdx) const ;
+		std::vector<fT> multiplySpecific(std::vector<fT> v, int startIdx) const;
 		SparseMatrix    operator*(const SparseMatrix& m) const;
 		SparseMatrix    operator/(fT alpha) const;
 		SparseMatrix&   operator+=(const SparseMatrix& m);
