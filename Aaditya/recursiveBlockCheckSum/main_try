@@ -386,13 +386,14 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 						auto r2 = checkVector[k].idx[j + i].second;
 
 						auto a2 = inner_product(checkVector[k].vec[j + i], p);
-						auto a3 = accumulate(q.begin() + r1, q.begin() + r2, 0);
+						auto a3 = accumulate(q.begin() + r1, q.begin() + r2 + 1, 0);
 						if (abs(a2 - a3) > 100) {
 							ans.push_back(true);
 							// if this is last iteration then fix the value
 							if (k == 4) {
 								// recompute the corrupt part
 								auto r3 = r1;
+								r3--;
 								for (; r3 < r2; r3++) {
 									q[r3] = inner_product(matrixA[r3], p);
 								}
@@ -410,13 +411,15 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 					for (auto const &i : ans) {
 						if (i) {
 							j += id;
+							int kk = j;
 							j = j * 2;
 							// check if more error exists
-							for (int j = id+1; j < ans.size(); j++) {
-								if (ans[j]) {
+							for (int o = id+1; o < ans.size(); o++) {
+								if (ans[o]) {
 									// store j and id
 									moreErrors = true;
-									auto tmpJ = j * 2;
+									kk += o;
+									auto tmpJ = kk * 2;
 									extraError.push_back(make_pair(k, tmpJ));
 								}
 							}
@@ -446,13 +449,14 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 						auto r2 = checkVector[k].idx[j + i].second;
 
 						auto a2 = inner_product(checkVector[k].vec[j + i], p);
-						auto a3 = accumulate(q.begin() + r1, q.begin() + r2, 0);
+						auto a3 = accumulate(q.begin() + r1, q.begin() + r2 + 1, 0);
 						if (abs(a2 - a3) > 100) {
 							ans.push_back(true);
 							// if this is last iteration then fix the value
 							if (k == 4) {
 								// recompute the corrupt part
 								auto r3 = r1;
+								r3--;
 								for (; r3 < r2; r3++) {
 									q[r3] = inner_product(matrixA[r3], p);
 								}
