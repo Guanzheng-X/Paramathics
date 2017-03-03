@@ -63,18 +63,18 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 	// now write the csv file into txt file
 	ofstream valFile("valPointerOnly8Idx.txt");
 	for (int i = 0; i < valPointer.size(); i++) {
-		if (valPointer[i] == 8)
-			idxVal8.push_back(i);
-		//valFile << i + 1 << " " << valPointer[i] << endl;
+	if (valPointer[i] == 8)
+	idxVal8.push_back(i);
+	//valFile << i + 1 << " " << valPointer[i] << endl;
 	}
 
 	for (int i = 0; i < 101; i++) {
-		auto idx1 = rand() % idxVal8.size();
-		auto idx2 = rand() % idxVal8.size();
-		valFile << idxVal8[idx1] << " " << idxVal8[idx2] << endl;
+	auto idx1 = rand() % idxVal8.size();
+	auto idx2 = rand() % idxVal8.size();
+	valFile << idxVal8[idx1] << " " << idxVal8[idx2] << endl;
 	}
 	*/
-	
+
 
 
 	// This is recursive block checksum approach idea to implement checksum matrix
@@ -384,9 +384,11 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 
 						auto r1 = checkVector[k].idx[j + i].first;
 						auto r2 = checkVector[k].idx[j + i].second;
-
+						if (r1 != 0) {
+							r1--;
+						}
 						auto a2 = inner_product(checkVector[k].vec[j + i], p);
-						auto a3 = accumulate(q.begin() + r1, q.begin() + r2 + 1, 0);
+						auto a3 = accumulate(q.begin() + r1, q.begin() + r2, 0);
 						if (abs(a2 - a3) > 100) {
 							ans.push_back(true);
 							// if this is last iteration then fix the value
@@ -398,7 +400,7 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 									q[r3] = inner_product(matrixA[r3], p);
 								}
 								error = false;
-								cout << "Error has been fixed. It was in  " << j+i << " block "<< endl;
+								cout << "Error has been fixed. It was in  " << j + i << " block " << endl;
 								break;
 							}
 						}
@@ -414,7 +416,7 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 							int kk = j;
 							j = j * 2;
 							// check if more error exists
-							for (int o = id+1; o < ans.size(); o++) {
+							for (int o = id + 1; o < ans.size(); o++) {
 								if (ans[o]) {
 									// store j and id
 									moreErrors = true;
@@ -447,9 +449,11 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 
 						auto r1 = checkVector[k].idx[j + i].first;
 						auto r2 = checkVector[k].idx[j + i].second;
-
+						if (r1 != 0) {
+							r1--;
+						}
 						auto a2 = inner_product(checkVector[k].vec[j + i], p);
-						auto a3 = accumulate(q.begin() + r1, q.begin() + r2 + 1, 0);
+						auto a3 = accumulate(q.begin() + r1, q.begin() + r2, 0);
 						if (abs(a2 - a3) > 100) {
 							ans.push_back(true);
 							// if this is last iteration then fix the value
@@ -460,7 +464,7 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 								for (; r3 < r2; r3++) {
 									q[r3] = inner_product(matrixA[r3], p);
 								}
-								cout << "Error has been fixed. It was in  " << j+i << " block "<< endl;
+								cout << "Error has been fixed. It was in  " << j + i << " block " << endl;
 								moreErrors = false;
 								break;
 							}
@@ -487,7 +491,7 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 
 		}
 
-		
+
 		// recurisve block checksum approach ends here
 
 
@@ -542,11 +546,11 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 			a.operator()(aa);
 		}
 
-	} 		
+	}
 
 	// end timer
 	auto time_2 = std::chrono::high_resolution_clock::now();
-	cout << "Time for execution in ms " << chrono::duration_cast<std::chrono::milliseconds>(time_2-time_1).count() << endl;
+	cout << "Time for execution in ms " << chrono::duration_cast<std::chrono::milliseconds>(time_2 - time_1).count() << endl;
 
 	if (!isConvergence) {
 		std::cout << "Does not converge after " << iteration << std::endl;
@@ -564,7 +568,7 @@ int main(int argc, char* argv[])
 
 	fstream read;
 
-	read.open(R"(gr_30_30.mtx)", ios::in);
+	read.open(R"(C:\Users\aadit\Documents\gr_30_30.mtx)", ios::in);
 
 	int row = 0; int col = 0; float value = 0; //get the value
 	read >> rows; read >> cols; read >> nonezero;
@@ -609,7 +613,7 @@ int main(int argc, char* argv[])
 	}
 	*/
 
-	
+
 	//system("pause");
 	return 0;
 }
