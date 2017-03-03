@@ -237,8 +237,8 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 	bc5.idx.push_back(make_pair(72, 86));
 	bc5.idx.push_back(make_pair(87, 102));
 	bc5.idx.push_back(make_pair(103, 117));
-	bc5.idx.push_back(make_pair(118, 133));
-	bc5.idx.push_back(make_pair(134, 147));
+	bc5.idx.push_back(make_pair(118, 135));
+	bc5.idx.push_back(make_pair(136, 147));
 	bc5.idx.push_back(make_pair(148, 165));
 	bc5.idx.push_back(make_pair(164, 169));
 	bc5.idx.push_back(make_pair(170, 194));
