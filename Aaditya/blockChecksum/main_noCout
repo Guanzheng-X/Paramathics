@@ -30,7 +30,7 @@ vector<vector<double>> matrixA(900, vector<double>(900, 0));
 
 
 //void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b, int num_iterations, vector<double>&x, vector<double>& xans);
-void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b, int num_iterations, vector<double>&x);
+void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b, int num_iterations, vector<double>&x, int idxFault1, int idxFault2);
 double inner_product(vector<double>&a, vector<double>&b);
 
 
@@ -44,7 +44,7 @@ double inner_product(vector<double>&a, vector<double>&b) {
 }
 
 //void conjugate_gradient( SparseMatrix<unsigned int, double> &a, vector<double>&b, int num_iterations, vector<double>&x, vector<double>&xans)
-void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b, int num_iterations, vector<double>&x)
+void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b, int num_iterations, vector<double>&x, int idxFault1, int idxFault2)
 {
 	// below code snippet will allow the preprocessing code to run and form a block checksum matrix
 	// the idea here is to iterate over matrix A and based on number of nnz elements form a checksum matrix
@@ -131,6 +131,8 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 		sparseCheckSum(rSparse - 1, cSparse - 1, vSparse);
 	}		// end of file
 
+	//cout << "sparse checksum matrix size is : " << sparseCheckSum.Dim() << endl;
+
 	readDenseMat.close();
 
 	// block checksum code ends here
@@ -189,7 +191,7 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 			vector<double> aaa = a();
 			//cout << "Iteration during which fault was injected " << iteration << endl;
 
-			corruptIt = aaa[704];
+			corruptIt = aaa[idxFault1];
 			//cout << "Value of in matrix A before corruption " << corruptIt << endl;
 			double corr = corruptIt;
 
@@ -199,10 +201,10 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 
 			long long ans = te ^ vv;
 			corr = *(double*)&ans;
-			aaa[704] = corr;
+			aaa[idxFault1] = corr;
 			//cout << "Value after corruption " << corr << endl;
 
-			corruptIt2 = aaa[3149];
+			corruptIt2 = aaa[idxFault2];
 			//cout << "Value in matrix A before corruption " << corruptIt2 << endl;
 			double corr2 = corruptIt2;
 
@@ -213,7 +215,7 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 			long long ans2 = te2 ^ vv2;
 
 			corr2 = *(double*)&ans2;
-			aaa[3149] = corr2;
+			aaa[idxFault2] = corr2;
 			//cout << "Value after corruption of second value " << corr2 << endl;
 
 			const vector<double> aaaaa = aaa;
@@ -226,11 +228,11 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 		{
 			vector<double> aaaa = a();
 
-			aaaa[704] = corruptIt;
+			aaaa[idxFault1] = corruptIt;
 			//cout << "Value has been restored back " << corruptIt << endl;
 
 			// insert second fault
-			aaaa[3149] = corruptIt2;
+			aaaa[idxFault2] = corruptIt2;
 			//cout << "Second value has been restored back " << corruptIt2 << endl;
 
 			const vector<double>aa = aaaa;
@@ -244,11 +246,13 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 
 		// below is the code for block checksum method to detect if there is any fault in Spmv
 		auto sparseErrorScalarVector = sparseCheckSum * p;
+		//cout << "size of sparseErrorScalarVector is : " << sparseErrorScalarVector.size() << endl;
 		double sumAn = 0;
 		int sumAnIt = 0;
 		vector<double> sparseErrorVec(90, 0);
-		//vector<double> sparseErrorSum(90, 0);
 
+
+		// shrink q to appropriate block size 
 		for (int i = 0; i < q.size(); i++) {
 
 			if ((i+1) % 10 == 0) {
@@ -263,25 +267,6 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 
 		// update the last summed value
 		sparseErrorVec[sparseErrorVec.size() - 1] += sumAn;
-
-		/*
-		sumAn = 0;
-		sumAnIt = 0;
-		// shrink the sparseErrorScalarVector 
-		for (int i = 0; i < sparseErrorScalarVector.size(); i++) {
-			if ((i+1) % 10 == 0) {
-				sparseErrorSum[sumAnIt] = sumAn;
-				sumAn = sparseErrorScalarVector[i];
-				sumAnIt++;
-			}
-			else {
-				sumAn += sparseErrorScalarVector[i];
-			}
-		}
-
-		// update the last summed value
-		sparseErrorScalarVector[sparseErrorScalarVector.size() - 1] += sumAn;
-		*/
 
 
 		vector<int> errorIndexVec;
@@ -303,7 +288,6 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 			std::copy_n(corAnsBlock.begin(), corAnsBlock.size(), q.begin() + startRowPointer);
 		}
 
-		//int aaaaaaa = 0;
 
 		double alpha = inner_product(r, r) / inner_product(p, q);
 
@@ -369,12 +353,12 @@ int main(int argc, char* argv[])
 	int row = 0; int col = 0; float value = 0; //get the value
 	read >> rows; read >> cols; read >> nonezero;
 
-	//std::cout << "matrix has " << rows << " rows " << cols << " cols " << nonezero << " nonezero values" << endl;
+	std::cout << "matrix has " << rows << " rows " << cols << " cols " << nonezero << " nonezero values" << endl;
 
 	//SparseMatrix mat(rows, cols);
 	myg::SparseMatrix<unsigned int, double> A(rows); // rows x rows identity matrix
 
-
+	cout << "argv1: " << argv[1] << " argv2: " << argv[2] << endl;
 
 	while (!read.eof()) {
 		read >> row;
@@ -399,7 +383,7 @@ int main(int argc, char* argv[])
 
 	vector<double> x(rows);
 
-	conjugate_gradient(A, b, 2000, x);
+	conjugate_gradient(A, b, 2000, x, stoi(argv[1]), stoi(argv[2]));
 
 	/*
 	for (int i = 0; i < x.size(); i++)
