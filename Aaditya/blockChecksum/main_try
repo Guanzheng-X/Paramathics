@@ -225,6 +225,23 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 		// temp = A * p
 		vector<double> q(rows);
 		q = a * p;
+		
+		// This is code snippet helps us to mimic the transient error since we flip the corrupted
+		// values back to orginal value
+		if (iteration == ite)
+		{
+			vector<double> aaaa = a();
+
+			aaaa[idxFault1] = corruptIt;
+			cout << "Value has been restored back " << corruptIt << endl;
+
+			// insert second fault
+			aaaa[idxFault2] = corruptIt2;
+			cout << "Second value has been restored back " << corruptIt2 << endl;
+
+			const vector<double>aa = aaaa;
+			a.operator()(aa);
+		}
 
 
 		// below is the code for block checksum method to detect if there is any fault in Spmv
@@ -233,8 +250,6 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 		double sumAn = 0;
 		int sumAnIt = 0;
 		vector<double> sparseErrorVec(90, 0);
-		vector<double> sparseErrorSum(90, 0);
-
 
 		// shrink q to appropriate block size 
 		for (int i = 0; i < q.size(); i++) {
@@ -252,39 +267,10 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 		// update the last summed value
 		sparseErrorVec[sparseErrorVec.size() - 1] += sumAn;
 
-
-		/*
-		sumAn = 0;
-		sumAnIt = 0;
-		// shrink the sparseErrorScalarVector 
-		for (int i = 0; i < sparseErrorScalarVector.size(); i++) {
-			if ((i+1) % 10 == 0) {
-				sparseErrorSum[sumAnIt] = sumAn;
-				sumAn = sparseErrorScalarVector[i];
-				sumAnIt++;
-			}
-			else {
-				sumAn += sparseErrorScalarVector[i];
-			}
-		}
-
-		// update the last summed value
-		sparseErrorScalarVector[sparseErrorScalarVector.size() - 1] += sumAn;
-		*/
-		// Above code is incorrect
-		// Try this below code
-		for (int i = 0; i < 90; i++) {
-			sparseErrorSum[i] = sparseErrorScalarVector[i];
-		}
-
-
-
-
-
 		vector<int> errorIndexVec;
 		// now compare the two result
 		for (int i = 0; i < 90; i++) {
-			auto tempErrV = sparseErrorVec[i] - sparseErrorSum[i];
+			auto tempErrV = sparseErrorVec[i] - sparseErrorScalarVector[i];
 			if (abs(tempErrV) > 1000) {
 				// record the error index
 				errorIndexVec.push_back(i);
@@ -295,7 +281,7 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 		// now check for error and re-execute the required block
 		for (auto&i : errorIndexVec) {
 			int startRowPointer = i * 10;
-			auto corAnsBlock = sparseCheckSum.multiplySpecific(p, startRowPointer);
+			auto corAnsBlock = a.multiplySpecific(p, startRowPointer);
 			// update the ans
 			std::copy_n(corAnsBlock.begin(), corAnsBlock.size(), q.begin() + startRowPointer);
 		}
@@ -336,24 +322,6 @@ void conjugate_gradient(SparseMatrix<unsigned int, double> &a, vector<double>&b,
 
 		//std::cout << sqrt(converge) << endl;
 		converge = inner_product(r, r);
-
-		// This is code snippet helps us to mimic the transient error since we flip the corrupted
-		// values back to orginal value
-		if (iteration == ite)
-		{
-			vector<double> aaaa = a();
-
-			aaaa[idxFault1] = corruptIt;
-			cout << "Value has been restored back " << corruptIt << endl;
-
-			// insert second fault
-			aaaa[idxFault2] = corruptIt2;
-			cout << "Second value has been restored back " << corruptIt2 << endl;
-
-			const vector<double>aa = aaaa;
-			a.operator()(aa);
-		}
-
 	}
 
 	// end timer
